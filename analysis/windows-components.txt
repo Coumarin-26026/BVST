@@ -1,0 +1,781 @@
+# Windows Components
+
+extracted/BVST 6.0/AForge.Controls.dll
+extracted/BVST 6.0/AForge.Imaging.dll
+extracted/BVST 6.0/AForge.Math.dll
+extracted/BVST 6.0/AForge.Video.DirectShow.dll
+extracted/BVST 6.0/AForge.Video.dll
+extracted/BVST 6.0/AForge.dll
+extracted/BVST 6.0/API3.SDK.dll
+extracted/BVST 6.0/ArBienBan.dll
+extracted/BVST 6.0/ArDMChung.dll
+extracted/BVST 6.0/ArGhiGiam.dll
+extracted/BVST 6.0/ArGhiTang.dll
+extracted/BVST 6.0/ArKhauHao.dll
+extracted/BVST 6.0/ArLuanChuyen.dll
+extracted/BVST 6.0/ArMuaSam.dll
+extracted/BVST 6.0/ArNhapXuatTon.dll
+extracted/BVST 6.0/ArPhieuDuTru.dll
+extracted/BVST 6.0/ArPhieuNhap.dll
+extracted/BVST 6.0/ArPhieuNhapKho.dll
+extracted/BVST 6.0/ArPhieuXuat.dll
+extracted/BVST 6.0/ArQuanLyDuAn.dll
+extracted/BVST 6.0/ArTaiSan.dll
+extracted/BVST 6.0/ArThamDinh.dll
+extracted/BVST 6.0/ArThayDoiThongTin.dll
+extracted/BVST 6.0/ArYeuCau.dll
+extracted/BVST 6.0/ArYeuCauTH.dll
+extracted/BVST 6.0/BAVaynen.dll
+extracted/BVST 6.0/BVST6.exe
+extracted/BVST 6.0/BVSTCategory.dll
+extracted/BVST 6.0/BVSTInput.dll
+extracted/BVST 6.0/BVSTReport.dll
+extracted/BVST 6.0/BackupLocation.exe
+extracted/BVST 6.0/BanLe.dll
+extracted/BVST 6.0/BanLeGiaDanhMuc.dll
+extracted/BVST 6.0/BanMoi_His.exe
+extracted/BVST 6.0/BanMoi_His_Bak.exe
+extracted/BVST 6.0/BangKiemHoSoBenhAn.dll
+extracted/BVST 6.0/BaoChe.dll
+extracted/BVST 6.0/BaoCheHuHao.dll
+extracted/BVST 6.0/BaoCheThanhPham.dll
+extracted/BVST 6.0/BaoDongDo.dll
+extracted/BVST 6.0/BenhAn.dll
+extracted/BVST 6.0/BoQuaCLS.dll
+extracted/BVST 6.0/BoSungCoSoTuTruc.dll
+extracted/BVST 6.0/BuCoSoTuTruc.dll
+extracted/BVST 6.0/CCCD.dll
+extracted/BVST 6.0/CDTL.Main.dll
+extracted/BVST 6.0/CLRSQL.dll
+extracted/BVST 6.0/CLS.InKQ.dll
+extracted/BVST 6.0/CLS.UpdateData.dll
+extracted/BVST 6.0/CNTT.dll
+extracted/BVST 6.0/CanhBaoDuKienSuDung.dll
+extracted/BVST 6.0/CanhBaoTonKho.dll
+extracted/BVST 6.0/CapNhatGiaDV.dll
+extracted/BVST 6.0/CapSoKSK.dll
+extracted/BVST 6.0/CareMe.dll
+extracted/BVST 6.0/CayDichVu.dll
+extracted/BVST 6.0/ChamCongKhoaPhong.dll
+extracted/BVST 6.0/ChamCongTruc.dll
+extracted/BVST 6.0/ChamSoc.dll
+extracted/BVST 6.0/ChamSocKhachHang.dll
+extracted/BVST 6.0/ChiDaoTuyen.dll
+extracted/BVST 6.0/ChucNangKhac.dll
+extracted/BVST 6.0/ChuongTrinhLao.dll
+extracted/BVST 6.0/ChuyenDoiTuong.dll
+extracted/BVST 6.0/ChuyenKhoan.dll
+extracted/BVST 6.0/ChuyenPhongKham.dll
+extracted/BVST 6.0/ChuyenTuyenBenhNhan.dll
+extracted/BVST 6.0/CommonCategory.dll
+extracted/BVST 6.0/CommonComponents.dll
+extracted/BVST 6.0/CommonEInvoice.dll
+extracted/BVST 6.0/CommonInput.dll
+extracted/BVST 6.0/CommonPrint.dll
+extracted/BVST 6.0/CommonReport.dll
+extracted/BVST 6.0/CongNo.dll
+extracted/BVST 6.0/CongOm.dll
+extracted/BVST 6.0/ConnectDataSqlEMR.dll
+extracted/BVST 6.0/DMChung.dll
+extracted/BVST 6.0/DMGoTat.dll
+extracted/BVST 6.0/DMHoiChanThuongQuy.dll
+extracted/BVST 6.0/DMPhauThuatMoTa.dll
+extracted/BVST 6.0/DMPhauThuatThuongQuy.dll
+extracted/BVST 6.0/DMPhongGiuong.dll
+extracted/BVST 6.0/DMXuatGoi.dll
+extracted/BVST 6.0/DNMienGiam.dll
+extracted/BVST 6.0/DangKyChuyenKhoa.dll
+extracted/BVST 6.0/DangKyGoi.dll
+extracted/BVST 6.0/DangKyKCB.dll
+extracted/BVST 6.0/DangKyKhac.dll
+extracted/BVST 6.0/DangKyNhapVien.dll
+extracted/BVST 6.0/DangKyOnline.dll
+extracted/BVST 6.0/DangKyPhatHanhThe.dll
+extracted/BVST 6.0/DangKyRaVien.dll
+extracted/BVST 6.0/DanhDauXuatToan.dll
+extracted/BVST 6.0/DanhMuc.BoThoiGian.dll
+extracted/BVST 6.0/DanhMuc.DinhMucCLS.dll
+extracted/BVST 6.0/DanhMuc.GoiVTTH.dll
+extracted/BVST 6.0/DanhMuc.MayCLS.dll
+extracted/BVST 6.0/DanhMuc.NgayADDinhMucCLS.dll
+extracted/BVST 6.0/DanhMucBenhICD.dll
+extracted/BVST 6.0/DanhMucCapDoGia.dll
+extracted/BVST 6.0/DanhMucChungDuoc.dll
+extracted/BVST 6.0/DanhMucCoSoTuTruc.dll
+extracted/BVST 6.0/DanhMucGiaXang.dll
+extracted/BVST 6.0/DanhMucHung.dll
+extracted/BVST 6.0/DanhMucMucHtNgheo.dll
+extracted/BVST 6.0/DanhMucNhanVien.dll
+extracted/BVST 6.0/DanhMucQuyenTC.dll
+extracted/BVST 6.0/DanhMucTaiNanThuongTich.dll
+extracted/BVST 6.0/DanhMucThe.dll
+extracted/BVST 6.0/DanhMucThietLapDonNguyenKho.dll
+extracted/BVST 6.0/DanhMucThietLapKhoaKho.dll
+extracted/BVST 6.0/DanhMucThongTinHoatChat.dll
+extracted/BVST 6.0/DanhMucThuocVatTu.dll
+extracted/BVST 6.0/DanhMucTranKTC.dll
+extracted/BVST 6.0/DanhMucTuongDuongTuTruc.dll
+extracted/BVST 6.0/DanhSachBN.dll
+extracted/BVST 6.0/DeNghiTamUng.dll
+extracted/BVST 6.0/DesignForms.dll
+extracted/BVST 6.0/DienBienBenh.dll
+extracted/BVST 6.0/DieuChinh.dll
+extracted/BVST 6.0/DieuChinhTienNhaThuoc.dll
+extracted/BVST 6.0/DieuChinhTong.dll
+extracted/BVST 6.0/DinhDuong.dll
+extracted/BVST 6.0/DirectShowLib-2005.dll
+extracted/BVST 6.0/DirectShowLib.dll
+extracted/BVST 6.0/DmGiaThuocVtBHYT.dll
+extracted/BVST 6.0/DmTyLeThanhToanThuocVt.dll
+extracted/BVST 6.0/DoThiLuc.dll
+extracted/BVST 6.0/DoiGiaDichVu.dll
+extracted/BVST 6.0/DotNetZip.dll
+extracted/BVST 6.0/DuLieuHoaDon.dll
+extracted/BVST 6.0/DuTruLinh.dll
+extracted/BVST 6.0/DuTruNhapHang.dll
+extracted/BVST 6.0/DuyetBaoChe.dll
+extracted/BVST 6.0/DuyetBuTuTruc.dll
+extracted/BVST 6.0/DuyetCapDon.dll
+extracted/BVST 6.0/DuyetDonNgoaiVien.dll
+extracted/BVST 6.0/DuyetDuTru.dll
+extracted/BVST 6.0/DuyetDuTruBoSung.dll
+extracted/BVST 6.0/DuyetDuTruHaoPhi.dll
+extracted/BVST 6.0/DuyetDuTruPhatKho.dll
+extracted/BVST 6.0/DuyetHuyThuChi.dll
+extracted/BVST 6.0/DuyetHuyThuChiKhac.dll
+extracted/BVST 6.0/DuyetPhieuLinh.dll
+extracted/BVST 6.0/DuyetPhieuLinhTach.dll
+extracted/BVST 6.0/DuyetTongHop.dll
+extracted/BVST 6.0/DuyetTraLaiPhatKho.dll
+extracted/BVST 6.0/DuyetTraTonVeKho.dll
+extracted/BVST 6.0/DuyetTuyenDuoiDuTru.dll
+extracted/BVST 6.0/DuyetTuyenDuoiTraLai.dll
+extracted/BVST 6.0/DuyetXacNhanNgheo.dll
+extracted/BVST 6.0/DuyetYLenh.dll
+extracted/BVST 6.0/ERMV6.exe
+extracted/BVST 6.0/GPB.Main.dll
+extracted/BVST 6.0/GiamDinhBHXH.dll
+extracted/BVST 6.0/GiamDinhYKhoa.dll
+extracted/BVST 6.0/GiaoNhanBenhPham.dll
+extracted/BVST 6.0/GiayToKemTheo.dll
+extracted/BVST 6.0/GoiBenhNhan.dll
+extracted/BVST 6.0/GoiDichVuBN.dll
+extracted/BVST 6.0/GopNhomKTC.dll
+extracted/BVST 6.0/GopPhieuLinh.dll
+extracted/BVST 6.0/HDDT6.dll
+extracted/BVST 6.0/HDDTHelper.dll
+extracted/BVST 6.0/HanhChinhKhoa.dll
+extracted/BVST 6.0/HenKham.dll
+extracted/BVST 6.0/HoSoNhanSu.dll
+extracted/BVST 6.0/HoaChatXetNghiem.dll
+extracted/BVST 6.0/HoaDonKyGui.dll
+extracted/BVST 6.0/HoanTraCoSoTuTruc.dll
+extracted/BVST 6.0/HoanTraPhieuTraLaiTuTruc.dll
+extracted/BVST 6.0/HoiChan.dll
+extracted/BVST 6.0/HrChamCongTay.dll
+extracted/BVST 6.0/HrChamCongvanTay.dll
+extracted/BVST 6.0/HrHDLaoDong.dll
+extracted/BVST 6.0/HrQTBaoHiem.dll
+extracted/BVST 6.0/HrQTBenhTat.dll
+extracted/BVST 6.0/HrQTDaoTao.dll
+extracted/BVST 6.0/HrQTHocTap.dll
+extracted/BVST 6.0/HrQTKhenThuong.dll
+extracted/BVST 6.0/HrQTKyLuat.dll
+extracted/BVST 6.0/HrQTLuanChuyen.dll
+extracted/BVST 6.0/HrQTPhuCap.dll
+extracted/BVST 6.0/HrQTSucKhoe.dll
+extracted/BVST 6.0/HrQTThamGiaCTXH.dll
+extracted/BVST 6.0/HrQuanHeGiaDinh.dll
+extracted/BVST 6.0/HrQuanLySucKhoe.dll
+extracted/BVST 6.0/HrThongTinLuong.dll
+extracted/BVST 6.0/HrVaiKy.dll
+extracted/BVST 6.0/HuyDonThuoc.dll
+extracted/BVST 6.0/HuyThuChi.dll
+extracted/BVST 6.0/HuyThuChiKhac.dll
+extracted/BVST 6.0/IVFHoSo.dll
+extracted/BVST 6.0/IVFPhoiNuoiCay.dll
+extracted/BVST 6.0/IVFPhoiTruLanh.dll
+extracted/BVST 6.0/IVFTinhDichDo.dll
+extracted/BVST 6.0/InChiDinhCLS.dll
+extracted/BVST 6.0/InLaiPhieuThuchi.dll
+extracted/BVST 6.0/KSD.LapKetQua.dll
+extracted/BVST 6.0/KSD.Main.dll
+extracted/BVST 6.0/KeDonMuaNgoai.dll
+extracted/BVST 6.0/KeDonThuocNgoaiTru.dll
+extracted/BVST 6.0/KeKhaiDiUng.dll
+extracted/BVST 6.0/KetQuaCLS.dll
+extracted/BVST 6.0/KhamBenh.dll
+extracted/BVST 6.0/KhamBenhKhac.dll
+extracted/BVST 6.0/KhamSucKhoe.dll
+extracted/BVST 6.0/KhoaSo.dll
+extracted/BVST 6.0/KhuyenMai.dll
+extracted/BVST 6.0/KiemSoatNhiemKhuan.dll
+extracted/BVST 6.0/KiemTraAmkho.dll
+extracted/BVST 6.0/LibsCLS.dll
+extracted/BVST 6.0/LichSuKham.dll
+extracted/BVST 6.0/LichSuThuocNhaThuoc.dll
+extracted/BVST 6.0/LocBenhNhan.dll
+extracted/BVST 6.0/LocDsBenhNhan.dll
+extracted/BVST 6.0/LrAuthenticator.dll
+extracted/BVST 6.0/LrBilingual.dll
+extracted/BVST 6.0/LrCapture.dll
+extracted/BVST 6.0/LrComponents.dll
+extracted/BVST 6.0/LrConnectData.dll
+extracted/BVST 6.0/LrControls.dll
+extracted/BVST 6.0/LrDllSupport.dll
+extracted/BVST 6.0/LrEnums.dll
+extracted/BVST 6.0/LrHangDoi.dll
+extracted/BVST 6.0/LrHelpers.dll
+extracted/BVST 6.0/LrHelpersARM.dll
+extracted/BVST 6.0/LrHelpersBaoCaoTT.dll
+extracted/BVST 6.0/LrHelpersCLS.dll
+extracted/BVST 6.0/LrHelpersCauHinhCLS.dll
+extracted/BVST 6.0/LrHelpersDuoc.dll
+extracted/BVST 6.0/LrHelpersKhac.dll
+extracted/BVST 6.0/LrHelpersKySo.dll
+extracted/BVST 6.0/LrHelpersNgoaiTru.dll
+extracted/BVST 6.0/LrHelpersNhanSu.dll
+extracted/BVST 6.0/LrHelpersNoiTru.dll
+extracted/BVST 6.0/LrHelpersRaVien.dll
+extracted/BVST 6.0/LrHelpersTHBA.dll
+extracted/BVST 6.0/LrHelpersThanhToan.dll
+extracted/BVST 6.0/LrKySo.dll
+extracted/BVST 6.0/LrKyVanTay.dll
+extracted/BVST 6.0/LrMain.exe
+extracted/BVST 6.0/LrMessages.dll
+extracted/BVST 6.0/LrOffice.dll
+extracted/BVST 6.0/LrPhieuKham.dll
+extracted/BVST 6.0/LrPhieuKhamEMR.dll
+extracted/BVST 6.0/LrProfiler.dll
+extracted/BVST 6.0/LrQuyen.dll
+extracted/BVST 6.0/LrReport.dll
+extracted/BVST 6.0/LrSystem.dll
+extracted/BVST 6.0/LrSystem30.dll
+extracted/BVST 6.0/LrThietLap.dll
+extracted/BVST 6.0/LuanChuyen.dll
+extracted/BVST 6.0/Microsoft.Web.Administration.dll
+extracted/BVST 6.0/MinhLoEMR.dll
+extracted/BVST 6.0/New folder/AForge.Controls.dll
+extracted/BVST 6.0/New folder/AForge.Imaging.dll
+extracted/BVST 6.0/New folder/AForge.Math.dll
+extracted/BVST 6.0/New folder/AForge.Video.DirectShow.dll
+extracted/BVST 6.0/New folder/AForge.Video.dll
+extracted/BVST 6.0/New folder/AForge.dll
+extracted/BVST 6.0/New folder/API3.SDK.dll
+extracted/BVST 6.0/New folder/ArBienBan.dll
+extracted/BVST 6.0/New folder/ArDMChung.dll
+extracted/BVST 6.0/New folder/ArGhiGiam.dll
+extracted/BVST 6.0/New folder/ArGhiTang.dll
+extracted/BVST 6.0/New folder/ArKhauHao.dll
+extracted/BVST 6.0/New folder/ArLuanChuyen.dll
+extracted/BVST 6.0/New folder/ArMuaSam.dll
+extracted/BVST 6.0/New folder/ArNhapXuatTon.dll
+extracted/BVST 6.0/New folder/ArPhieuDuTru.dll
+extracted/BVST 6.0/New folder/ArPhieuNhap.dll
+extracted/BVST 6.0/New folder/ArPhieuXuat.dll
+extracted/BVST 6.0/New folder/ArQuanLyDuAn.dll
+extracted/BVST 6.0/New folder/ArTaiSan.dll
+extracted/BVST 6.0/New folder/ArThamDinh.dll
+extracted/BVST 6.0/New folder/ArThayDoiThongTin.dll
+extracted/BVST 6.0/New folder/ArYeuCau.dll
+extracted/BVST 6.0/New folder/ArYeuCauTH.dll
+extracted/BVST 6.0/New folder/BVST6.exe
+extracted/BVST 6.0/New folder/BVSTReport.dll
+extracted/BVST 6.0/New folder/BackupLocation.exe
+extracted/BVST 6.0/New folder/BanLe.dll
+extracted/BVST 6.0/New folder/BanLeGiaDanhMuc.dll
+extracted/BVST 6.0/New folder/BanMoi_His.exe
+extracted/BVST 6.0/New folder/BanMoi_His_Bak.exe
+extracted/BVST 6.0/New folder/BangKiemHoSoBenhAn.dll
+extracted/BVST 6.0/New folder/BaoChe.dll
+extracted/BVST 6.0/New folder/BaoCheHuHao.dll
+extracted/BVST 6.0/New folder/BaoCheThanhPham.dll
+extracted/BVST 6.0/New folder/BenhAn.dll
+extracted/BVST 6.0/New folder/BoQuaCLS.dll
+extracted/BVST 6.0/New folder/BoSungCoSoTuTruc.dll
+extracted/BVST 6.0/New folder/BuCoSoTuTruc.dll
+extracted/BVST 6.0/New folder/CDTL.Main.dll
+extracted/BVST 6.0/New folder/CLRSQL.dll
+extracted/BVST 6.0/New folder/CLS.InKQ.dll
+extracted/BVST 6.0/New folder/CLS.UpdateData.dll
+extracted/BVST 6.0/New folder/CNTT.dll
+extracted/BVST 6.0/New folder/CanhBaoDuKienSuDung.dll
+extracted/BVST 6.0/New folder/CanhBaoTonKho.dll
+extracted/BVST 6.0/New folder/CapNhatGiaDV.dll
+extracted/BVST 6.0/New folder/CapSoKSK.dll
+extracted/BVST 6.0/New folder/CayDichVu.dll
+extracted/BVST 6.0/New folder/ChamCongKhoaPhong.dll
+extracted/BVST 6.0/New folder/ChamCongTruc.dll
+extracted/BVST 6.0/New folder/ChamSoc.dll
+extracted/BVST 6.0/New folder/ChucNangKhac.dll
+extracted/BVST 6.0/New folder/ChuyenDoiTuong.dll
+extracted/BVST 6.0/New folder/ChuyenKhoan.dll
+extracted/BVST 6.0/New folder/ChuyenPhongKham.dll
+extracted/BVST 6.0/New folder/ChuyenTuyenBenhNhan.dll
+extracted/BVST 6.0/New folder/CommonCategory.dll
+extracted/BVST 6.0/New folder/CommonComponents.dll
+extracted/BVST 6.0/New folder/CommonEInvoice.dll
+extracted/BVST 6.0/New folder/CommonInput.dll
+extracted/BVST 6.0/New folder/CommonPrint.dll
+extracted/BVST 6.0/New folder/CommonReport.dll
+extracted/BVST 6.0/New folder/CongNo.dll
+extracted/BVST 6.0/New folder/CongOm.dll
+extracted/BVST 6.0/New folder/ConnectDataSqlEMR.dll
+extracted/BVST 6.0/New folder/DMChung.dll
+extracted/BVST 6.0/New folder/DMGoTat.dll
+extracted/BVST 6.0/New folder/DMHoiChanThuongQuy.dll
+extracted/BVST 6.0/New folder/DMPhauThuatMoTa.dll
+extracted/BVST 6.0/New folder/DMPhauThuatThuongQuy.dll
+extracted/BVST 6.0/New folder/DMPhongGiuong.dll
+extracted/BVST 6.0/New folder/DMXuatGoi.dll
+extracted/BVST 6.0/New folder/DNMienGiam.dll
+extracted/BVST 6.0/New folder/DangKyChuyenKhoa.dll
+extracted/BVST 6.0/New folder/DangKyKCB.dll
+extracted/BVST 6.0/New folder/DangKyKhac.dll
+extracted/BVST 6.0/New folder/DangKyNhapVien.dll
+extracted/BVST 6.0/New folder/DangKyOnline.dll
+extracted/BVST 6.0/New folder/DangKyPhatHanhThe.dll
+extracted/BVST 6.0/New folder/DangKyRaVien.dll
+extracted/BVST 6.0/New folder/DanhDauXuatToan.dll
+extracted/BVST 6.0/New folder/DanhMuc.BoThoiGian.dll
+extracted/BVST 6.0/New folder/DanhMuc.DinhMucCLS.dll
+extracted/BVST 6.0/New folder/DanhMuc.GoiVTTH.dll
+extracted/BVST 6.0/New folder/DanhMuc.MayCLS.dll
+extracted/BVST 6.0/New folder/DanhMuc.NgayADDinhMucCLS.dll
+extracted/BVST 6.0/New folder/DanhMucBenhICD.dll
+extracted/BVST 6.0/New folder/DanhMucCapDoGia.dll
+extracted/BVST 6.0/New folder/DanhMucChungDuoc.dll
+extracted/BVST 6.0/New folder/DanhMucCoSoTuTruc.dll
+extracted/BVST 6.0/New folder/DanhMucGiaXang.dll
+extracted/BVST 6.0/New folder/DanhMucHung.dll
+extracted/BVST 6.0/New folder/DanhMucMucHtNgheo.dll
+extracted/BVST 6.0/New folder/DanhMucNhanVien.dll
+extracted/BVST 6.0/New folder/DanhMucQuyenTC.dll
+extracted/BVST 6.0/New folder/DanhMucTaiNanThuongTich.dll
+extracted/BVST 6.0/New folder/DanhMucThe.dll
+extracted/BVST 6.0/New folder/DanhMucThietLapDonNguyenKho.dll
+extracted/BVST 6.0/New folder/DanhMucThietLapKhoaKho.dll
+extracted/BVST 6.0/New folder/DanhMucThongTinHoatChat.dll
+extracted/BVST 6.0/New folder/DanhMucThuocVatTu.dll
+extracted/BVST 6.0/New folder/DanhMucTranKTC.dll
+extracted/BVST 6.0/New folder/DanhMucTuongDuongTuTruc.dll
+extracted/BVST 6.0/New folder/DanhSachBN.dll
+extracted/BVST 6.0/New folder/DeNghiTamUng.dll
+extracted/BVST 6.0/New folder/DesignForms.dll
+extracted/BVST 6.0/New folder/DienBienBenh.dll
+extracted/BVST 6.0/New folder/DieuChinh.dll
+extracted/BVST 6.0/New folder/DieuChinhTienNhaThuoc.dll
+extracted/BVST 6.0/New folder/DieuChinhTong.dll
+extracted/BVST 6.0/New folder/DinhDuong.dll
+extracted/BVST 6.0/New folder/DirectShowLib-2005.dll
+extracted/BVST 6.0/New folder/DirectShowLib.dll
+extracted/BVST 6.0/New folder/DoThiLuc.dll
+extracted/BVST 6.0/New folder/DoiGiaDichVu.dll
+extracted/BVST 6.0/New folder/DuLieuHoaDon.dll
+extracted/BVST 6.0/New folder/DuTruLinh.dll
+extracted/BVST 6.0/New folder/DuTruNhapHang.dll
+extracted/BVST 6.0/New folder/DuyetBaoChe.dll
+extracted/BVST 6.0/New folder/DuyetBuTuTruc.dll
+extracted/BVST 6.0/New folder/DuyetCapDon.dll
+extracted/BVST 6.0/New folder/DuyetDonNgoaiVien.dll
+extracted/BVST 6.0/New folder/DuyetDuTru.dll
+extracted/BVST 6.0/New folder/DuyetDuTruBoSung.dll
+extracted/BVST 6.0/New folder/DuyetDuTruHaoPhi.dll
+extracted/BVST 6.0/New folder/DuyetDuTruPhatKho.dll
+extracted/BVST 6.0/New folder/DuyetHuyThuChi.dll
+extracted/BVST 6.0/New folder/DuyetHuyThuChiKhac.dll
+extracted/BVST 6.0/New folder/DuyetPhieuLinh.dll
+extracted/BVST 6.0/New folder/DuyetPhieuLinhTach.dll
+extracted/BVST 6.0/New folder/DuyetTongHop.dll
+extracted/BVST 6.0/New folder/DuyetTraLaiPhatKho.dll
+extracted/BVST 6.0/New folder/DuyetTraTonVeKho.dll
+extracted/BVST 6.0/New folder/DuyetTuyenDuoiDuTru.dll
+extracted/BVST 6.0/New folder/DuyetTuyenDuoiTraLai.dll
+extracted/BVST 6.0/New folder/DuyetXacNhanNgheo.dll
+extracted/BVST 6.0/New folder/DuyetYLenh.dll
+extracted/BVST 6.0/New folder/ERMV6.exe
+extracted/BVST 6.0/New folder/GiamDinhBHXH.dll
+extracted/BVST 6.0/New folder/GiayToKemTheo.dll
+extracted/BVST 6.0/New folder/GoiBenhNhan.dll
+extracted/BVST 6.0/New folder/GoiDichVuBN.dll
+extracted/BVST 6.0/New folder/GopNhomKTC.dll
+extracted/BVST 6.0/New folder/GopPhieuLinh.dll
+extracted/BVST 6.0/New folder/HDDT6.dll
+extracted/BVST 6.0/New folder/HDDTHelper.dll
+extracted/BVST 6.0/New folder/HanhChinhKhoa.dll
+extracted/BVST 6.0/New folder/HenKham.dll
+extracted/BVST 6.0/New folder/HoSoNhanSu.dll
+extracted/BVST 6.0/New folder/HoaChatXetNghiem.dll
+extracted/BVST 6.0/New folder/HoaDonKyGui.dll
+extracted/BVST 6.0/New folder/HoanTraCoSoTuTruc.dll
+extracted/BVST 6.0/New folder/HoanTraPhieuTraLaiTuTruc.dll
+extracted/BVST 6.0/New folder/HoiChan.dll
+extracted/BVST 6.0/New folder/HrChamCongvanTay.dll
+extracted/BVST 6.0/New folder/HrHDLaoDong.dll
+extracted/BVST 6.0/New folder/HrQTBaoHiem.dll
+extracted/BVST 6.0/New folder/HrQTBenhTat.dll
+extracted/BVST 6.0/New folder/HrQTDaoTao.dll
+extracted/BVST 6.0/New folder/HrQTHocTap.dll
+extracted/BVST 6.0/New folder/HrQTKhenThuong.dll
+extracted/BVST 6.0/New folder/HrQTKyLuat.dll
+extracted/BVST 6.0/New folder/HrQTLuanChuyen.dll
+extracted/BVST 6.0/New folder/HrQTPhuCap.dll
+extracted/BVST 6.0/New folder/HrQTSucKhoe.dll
+extracted/BVST 6.0/New folder/HrQTThamGiaCTXH.dll
+extracted/BVST 6.0/New folder/HrQuanHeGiaDinh.dll
+extracted/BVST 6.0/New folder/HrThongTinLuong.dll
+extracted/BVST 6.0/New folder/HrVaiKy.dll
+extracted/BVST 6.0/New folder/HuyDonThuoc.dll
+extracted/BVST 6.0/New folder/HuyThuChi.dll
+extracted/BVST 6.0/New folder/HuyThuChiKhac.dll
+extracted/BVST 6.0/New folder/IVFHoSo.dll
+extracted/BVST 6.0/New folder/IVFPhoiNuoiCay.dll
+extracted/BVST 6.0/New folder/IVFPhoiTruLanh.dll
+extracted/BVST 6.0/New folder/IVFTinhDichDo.dll
+extracted/BVST 6.0/New folder/InChiDinhCLS.dll
+extracted/BVST 6.0/New folder/InLaiPhieuThuchi.dll
+extracted/BVST 6.0/New folder/KSD.LapKetQua.dll
+extracted/BVST 6.0/New folder/KSD.Main.dll
+extracted/BVST 6.0/New folder/KeDonMuaNgoai.dll
+extracted/BVST 6.0/New folder/KeDonThuocNgoaiTru.dll
+extracted/BVST 6.0/New folder/KeKhaiDiUng.dll
+extracted/BVST 6.0/New folder/KetQuaCLS.dll
+extracted/BVST 6.0/New folder/KhamBenh.dll
+extracted/BVST 6.0/New folder/KhamBenhKhac.dll
+extracted/BVST 6.0/New folder/KhamSucKhoe.dll
+extracted/BVST 6.0/New folder/KhoaSo.dll
+extracted/BVST 6.0/New folder/KiemSoatNhiemKhuan.dll
+extracted/BVST 6.0/New folder/KiemTraAmkho.dll
+extracted/BVST 6.0/New folder/LibsCLS.dll
+extracted/BVST 6.0/New folder/LichSuKham.dll
+extracted/BVST 6.0/New folder/LichSuThuocNhaThuoc.dll
+extracted/BVST 6.0/New folder/LocBenhNhan.dll
+extracted/BVST 6.0/New folder/LocDsBenhNhan.dll
+extracted/BVST 6.0/New folder/LrBilingual.dll
+extracted/BVST 6.0/New folder/LrCapture.dll
+extracted/BVST 6.0/New folder/LrComponents.dll
+extracted/BVST 6.0/New folder/LrConnectData.dll
+extracted/BVST 6.0/New folder/LrDllSupport.dll
+extracted/BVST 6.0/New folder/LrEnums.dll
+extracted/BVST 6.0/New folder/LrHelpers.dll
+extracted/BVST 6.0/New folder/LrHelpersARM.dll
+extracted/BVST 6.0/New folder/LrHelpersBaoCaoTT.dll
+extracted/BVST 6.0/New folder/LrHelpersCLS.dll
+extracted/BVST 6.0/New folder/LrHelpersDuoc.dll
+extracted/BVST 6.0/New folder/LrHelpersKhac.dll
+extracted/BVST 6.0/New folder/LrHelpersKySo.dll
+extracted/BVST 6.0/New folder/LrHelpersNgoaiTru.dll
+extracted/BVST 6.0/New folder/LrHelpersNhanSu.dll
+extracted/BVST 6.0/New folder/LrHelpersNoiTru.dll
+extracted/BVST 6.0/New folder/LrHelpersRaVien.dll
+extracted/BVST 6.0/New folder/LrHelpersThanhToan.dll
+extracted/BVST 6.0/New folder/LrKySo.dll
+extracted/BVST 6.0/New folder/LrKyVanTay.dll
+extracted/BVST 6.0/New folder/LrMain.exe
+extracted/BVST 6.0/New folder/LrMessages.dll
+extracted/BVST 6.0/New folder/LrOffice.dll
+extracted/BVST 6.0/New folder/LrPhieuKham.dll
+extracted/BVST 6.0/New folder/LrPhieuKhamEMR.dll
+extracted/BVST 6.0/New folder/LrProfiler.dll
+extracted/BVST 6.0/New folder/LrQuyen.dll
+extracted/BVST 6.0/New folder/LrReport.dll
+extracted/BVST 6.0/New folder/LrSystem.dll
+extracted/BVST 6.0/New folder/LrSystem30.dll
+extracted/BVST 6.0/New folder/LrThietLap.dll
+extracted/BVST 6.0/New folder/LuanChuyen.dll
+extracted/BVST 6.0/New folder/Microsoft.Web.Administration.dll
+extracted/BVST 6.0/New folder/MinhLoEMR.dll
+extracted/BVST 6.0/New folder/Newtonsoft.Json.dll
+extracted/BVST 6.0/New folder/NhapChiPhiCu.dll
+extracted/BVST 6.0/New folder/NhapDienBienKB.dll
+extracted/BVST 6.0/New folder/NhapKho.dll
+extracted/BVST 6.0/New folder/NhapXuatSupport.dll
+extracted/BVST 6.0/New folder/PdfSharp.dll
+extracted/BVST 6.0/New folder/PdfViewerContainer.dll
+extracted/BVST 6.0/New folder/PhacDoDieuTri.dll
+extracted/BVST 6.0/New folder/PhauThuatChuyenMo.dll
+extracted/BVST 6.0/New folder/PhauThuatDuyetMo.dll
+extracted/BVST 6.0/New folder/PhauThuatLichMo.dll
+extracted/BVST 6.0/New folder/PhauThuatLoLai.dll
+extracted/BVST 6.0/New folder/PhauThuatToTrinh.dll
+extracted/BVST 6.0/New folder/PhieuChamSoc.dll
+extracted/BVST 6.0/New folder/PhieuDieuTri.dll
+extracted/BVST 6.0/New folder/PhieuLinhSupport.dll
+extracted/BVST 6.0/New folder/PhieuTheoDoiCNS.dll
+extracted/BVST 6.0/New folder/PhieuTheoDoiLM.dll
+extracted/BVST 6.0/New folder/PhieuTheoDoiTD.dll
+extracted/BVST 6.0/New folder/PhieuTheoDoiTM.dll
+extracted/BVST 6.0/New folder/PhieuThuPhanUngThuoc.dll
+extracted/BVST 6.0/New folder/PhieuVatLyTriLieu.dll
+extracted/BVST 6.0/New folder/PrintSupport.dll
+extracted/BVST 6.0/New folder/QLDoVai.dll
+extracted/BVST 6.0/New folder/QuanLyBenhAn.dll
+extracted/BVST 6.0/New folder/RemoteCommand.dll
+extracted/BVST 6.0/New folder/SacThuoc.dll
+extracted/BVST 6.0/New folder/SendSMS.dll
+extracted/BVST 6.0/New folder/SetupCaptureCard.exe
+extracted/BVST 6.0/New folder/Spire.License.dll
+extracted/BVST 6.0/New folder/Spire.Pdf.dll
+extracted/BVST 6.0/New folder/Spire.PdfViewer.Forms.dll
+extracted/BVST 6.0/New folder/SuCoYKhoa.dll
+extracted/BVST 6.0/New folder/SuaDonThuocDuyet.dll
+extracted/BVST 6.0/New folder/SuaHinhThucTT.dll
+extracted/BVST 6.0/New folder/SuaLyDoTc.dll
+extracted/BVST 6.0/New folder/SuaThangQT.dll
+extracted/BVST 6.0/New folder/SuaThongTinLuoi.dll
+extracted/BVST 6.0/New folder/SuaXepPhongGiuong.dll
+extracted/BVST 6.0/New folder/SucKhoeSinhSan.dll
+extracted/BVST 6.0/New folder/SupportNoiTru.dll
+extracted/BVST 6.0/New folder/TachBenhAn.dll
+extracted/BVST 6.0/New folder/TaiNanThuongTich.dll
+extracted/BVST 6.0/New folder/ThanhToan.dll
+extracted/BVST 6.0/New folder/ThanhToanKhongTienMat.dll
+extracted/BVST 6.0/New folder/ThanhToanVpNgoaiTru.dll
+extracted/BVST 6.0/New folder/ThanhToanVpNoiTru.dll
+extracted/BVST 6.0/New folder/ThanhToanXa.dll
+extracted/BVST 6.0/New folder/ThietLapChenh.dll
+extracted/BVST 6.0/New folder/ThietLapCongNo.dll
+extracted/BVST 6.0/New folder/ThietLapInPhoi.dll
+extracted/BVST 6.0/New folder/ThietLapPhuThu.dll
+extracted/BVST 6.0/New folder/ThongKeDangKyKCB.dll
+extracted/BVST 6.0/New folder/ThongTinTu.dll
+extracted/BVST 6.0/New folder/ThongTinYLenh.dll
+extracted/BVST 6.0/New folder/ThongTuyenXa.dll
+extracted/BVST 6.0/New folder/ThuChi.dll
+extracted/BVST 6.0/New folder/ThuChiKhac.dll
+extracted/BVST 6.0/New folder/ThuChiTheoDoan.dll
+extracted/BVST 6.0/New folder/ThuThuatLam.dll
+extracted/BVST 6.0/New folder/TiepNhanVaoKhoa.dll
+extracted/BVST 6.0/New folder/TlBangKeMacDinh.dll
+extracted/BVST 6.0/New folder/TlGiaBHYTThuocVtKhacDm.dll
+extracted/BVST 6.0/New folder/TlNguonChiTraKhac.dll
+extracted/BVST 6.0/New folder/TlThoiDiemInBangKe.dll
+extracted/BVST 6.0/New folder/TlTuDongTachPhieuThu.dll
+extracted/BVST 6.0/New folder/TlTuDongThuChi.dll
+extracted/BVST 6.0/New folder/TlTyLeThuocVtKhacDm.dll
+extracted/BVST 6.0/New folder/ToDieuTri.dll
+extracted/BVST 6.0/New folder/TongHopBanLe.dll
+extracted/BVST 6.0/New folder/TongHopDonThuoc.dll
+extracted/BVST 6.0/New folder/TongHopGiaoBan.dll
+extracted/BVST 6.0/New folder/TongHopKhamBenh.dll
+extracted/BVST 6.0/New folder/TongHopThuChi.dll
+extracted/BVST 6.0/New folder/TongHopThuChiKhac.dll
+extracted/BVST 6.0/New folder/TonghopKCBBHYT.dll
+extracted/BVST 6.0/New folder/ToolThanhToan.dll
+extracted/BVST 6.0/New folder/TraCuuBnTreo.dll
+extracted/BVST 6.0/New folder/TraCuuChiPhi.dll
+extracted/BVST 6.0/New folder/TraCuuChungTuNhapXuat.dll
+extracted/BVST 6.0/New folder/TraCuuHieuQua.dll
+extracted/BVST 6.0/New folder/TraCuuSupport.dll
+extracted/BVST 6.0/New folder/TraCuuThuocItDung.dll
+extracted/BVST 6.0/New folder/TraCuuTon.dll
+extracted/BVST 6.0/New folder/TraLai.dll
+extracted/BVST 6.0/New folder/TraLaiNhaThuoc.dll
+extracted/BVST 6.0/New folder/TraLaiTuTruc.dll
+extracted/BVST 6.0/New folder/TraTonVeKho.dll
+extracted/BVST 6.0/New folder/TraVoPhieuDuTru.dll
+extracted/BVST 6.0/New folder/TreSoSinh.dll
+extracted/BVST 6.0/New folder/TrichSaoBenhAn.dll
+extracted/BVST 6.0/New folder/VNPTDSCore.dll
+extracted/BVST 6.0/New folder/Viettel-His.exe
+extracted/BVST 6.0/New folder/ViewDienBienYLenh.dll
+extracted/BVST 6.0/New folder/XETNGHIEM.HoTro.dll
+extracted/BVST 6.0/New folder/XETNGHIEM.LapKetQua.dll
+extracted/BVST 6.0/New folder/XETNGHIEM.NhanBenhPham.dll
+extracted/BVST 6.0/New folder/XMLHelper.dll
+extracted/BVST 6.0/New folder/XacNhanBH100.dll
+extracted/BVST 6.0/New folder/XacNhanNgheo.dll
+extracted/BVST 6.0/New folder/XacNhanTronVien.dll
+extracted/BVST 6.0/New folder/XemChiTietChuaBu.dll
+extracted/BVST 6.0/New folder/XemGiaDichVu.dll
+extracted/BVST 6.0/New folder/XemLichSuInGiay.dll
+extracted/BVST 6.0/New folder/XepPhongGiuong.dll
+extracted/BVST 6.0/New folder/XmlData.dll
+extracted/BVST 6.0/New folder/XmlTool.exe
+extracted/BVST 6.0/New folder/XuatDungChung.dll
+extracted/BVST 6.0/New folder/XuatHangHetLuongConTien.dll
+extracted/BVST 6.0/New folder/XuatKho.dll
+extracted/BVST 6.0/New folder/cls.ChamCong.dll
+extracted/BVST 6.0/New folder/frmBanGiaoBenhAn.dll
+extracted/BVST 6.0/New folder/frmBieuDoChuyenDa.dll
+extracted/BVST 6.0/New folder/frmBieuDoGayMe.dll
+extracted/BVST 6.0/New folder/frmCDHAHoTro.dll
+extracted/BVST 6.0/New folder/frmDanhMucChiSo.dll
+extracted/BVST 6.0/New folder/frmDanhMucChung.dll
+extracted/BVST 6.0/New folder/frmDanhMucDichVu.dll
+extracted/BVST 6.0/New folder/frmDanhSachCDHA.dll
+extracted/BVST 6.0/New folder/frmFileExplorer.dll
+extracted/BVST 6.0/New folder/frmGioSuDungThuoc.dll
+extracted/BVST 6.0/New folder/frmInAnh.dll
+extracted/BVST 6.0/New folder/frmKhongKiemTraCLS.dll
+extracted/BVST 6.0/New folder/frmLapKetQuaTheoMau.dll
+extracted/BVST 6.0/New folder/frmLayAnh.dll
+extracted/BVST 6.0/New folder/frmMuonTraBenhAn.dll
+extracted/BVST 6.0/New folder/frmPhucHoiChucNang.dll
+extracted/BVST 6.0/New folder/frmQuanLyMau.dll
+extracted/BVST 6.0/New folder/frmSqlServer.dll
+extracted/BVST 6.0/New folder/frmTongHopBenhAn.dll
+extracted/BVST 6.0/New folder/frmTraCuuGiayTo.dll
+extracted/BVST 6.0/New folder/frmVatLyTriLieu.dll
+extracted/BVST 6.0/New folder/itextsharp.dll
+extracted/BVST 6.0/New folder/kiemPhoi.dll
+extracted/BVST 6.0/New folder/libzkfpcsharp.dll
+extracted/BVST 6.0/New folder/log4net.dll
+extracted/BVST 6.0/New folder/wSigner.dll
+extracted/BVST 6.0/New folder/wSignerXML.dll
+extracted/BVST 6.0/Newtonsoft.Json.dll
+extracted/BVST 6.0/NhapChiPhiCu.dll
+extracted/BVST 6.0/NhapDienBienKB.dll
+extracted/BVST 6.0/NhapKho.dll
+extracted/BVST 6.0/NhapXuatSupport.dll
+extracted/BVST 6.0/PYC_XuatNhapTon.dll
+extracted/BVST 6.0/PdfFontApi.dll
+extracted/BVST 6.0/PdfSharp.dll
+extracted/BVST 6.0/PdfViewerContainer.dll
+extracted/BVST 6.0/Pdfium/x64/pdfium.dll
+extracted/BVST 6.0/PdfiumViewer.dll
+extracted/BVST 6.0/PhacDoDieuTri.dll
+extracted/BVST 6.0/PhauThuatChuyenMo.dll
+extracted/BVST 6.0/PhauThuatDuyetMo.dll
+extracted/BVST 6.0/PhauThuatLichMo.dll
+extracted/BVST 6.0/PhauThuatLoLai.dll
+extracted/BVST 6.0/PhauThuatToTrinh.dll
+extracted/BVST 6.0/PhieuChamSoc.dll
+extracted/BVST 6.0/PhieuDieuTri.dll
+extracted/BVST 6.0/PhieuLinhSupport.dll
+extracted/BVST 6.0/PhieuTheoDoiCNS.dll
+extracted/BVST 6.0/PhieuTheoDoiHT.dll
+extracted/BVST 6.0/PhieuTheoDoiLM.dll
+extracted/BVST 6.0/PhieuTheoDoiTD.dll
+extracted/BVST 6.0/PhieuTheoDoiTM.dll
+extracted/BVST 6.0/PhieuThuPhanUngThuoc.dll
+extracted/BVST 6.0/PhieuVatLyTriLieu.dll
+extracted/BVST 6.0/PrintSupport.dll
+extracted/BVST 6.0/QLDoVai.dll
+extracted/BVST 6.0/QuanLyBenhAn.dll
+extracted/BVST 6.0/QuanLyDieuXe.dll
+extracted/BVST 6.0/QuanLyDoVai.dll
+extracted/BVST 6.0/RemoteCommand.dll
+extracted/BVST 6.0/SacThuoc.dll
+extracted/BVST 6.0/SendSMS.dll
+extracted/BVST 6.0/SetupCaptureCard.exe
+extracted/BVST 6.0/Spire.License.dll
+extracted/BVST 6.0/Spire.Pdf.dll
+extracted/BVST 6.0/Spire.PdfViewer.Forms.dll
+extracted/BVST 6.0/SuCoYKhoa.dll
+extracted/BVST 6.0/SuaDonThuocDuyet.dll
+extracted/BVST 6.0/SuaHinhThucTT.dll
+extracted/BVST 6.0/SuaLyDoTc.dll
+extracted/BVST 6.0/SuaThangQT.dll
+extracted/BVST 6.0/SuaThongTinLuoi.dll
+extracted/BVST 6.0/SuaXepPhongGiuong.dll
+extracted/BVST 6.0/SucKhoeSinhSan.dll
+extracted/BVST 6.0/SucKhoeSinhSanVNPT.dll
+extracted/BVST 6.0/SupportNoiTru.dll
+extracted/BVST 6.0/Syncfusion.Compression.Base.dll
+extracted/BVST 6.0/Syncfusion.Licensing.dll
+extracted/BVST 6.0/Syncfusion.Pdf.Base.dll
+extracted/BVST 6.0/Syncfusion.PdfViewer.Windows.dll
+extracted/BVST 6.0/Syncfusion.Shared.Base.dll
+extracted/BVST 6.0/TachBenhAn.dll
+extracted/BVST 6.0/TaiNanThuongTich.dll
+extracted/BVST 6.0/ThanhToan.dll
+extracted/BVST 6.0/ThanhToanBHYTTuNhan.dll
+extracted/BVST 6.0/ThanhToanKhongTienMat.dll
+extracted/BVST 6.0/ThanhToanSV.exe
+extracted/BVST 6.0/ThanhToanVpNgoaiTru.dll
+extracted/BVST 6.0/ThanhToanVpNoiTru.dll
+extracted/BVST 6.0/ThanhToanXa.dll
+extracted/BVST 6.0/ThietLapChenh.dll
+extracted/BVST 6.0/ThietLapCongNo.dll
+extracted/BVST 6.0/ThietLapInPhoi.dll
+extracted/BVST 6.0/ThietLapPhuThu.dll
+extracted/BVST 6.0/ThongKeDangKyKCB.dll
+extracted/BVST 6.0/ThongTinTu.dll
+extracted/BVST 6.0/ThongTinYLenh.dll
+extracted/BVST 6.0/ThongTuyenXa.dll
+extracted/BVST 6.0/ThuChi.dll
+extracted/BVST 6.0/ThuChiKhac.dll
+extracted/BVST 6.0/ThuChiTheoDoan.dll
+extracted/BVST 6.0/ThuThuatLam.dll
+extracted/BVST 6.0/TienSanGiat.dll
+extracted/BVST 6.0/TiepNhanVaoKhoa.dll
+extracted/BVST 6.0/TlBangKeMacDinh.dll
+extracted/BVST 6.0/TlGiaBHYTThuocVtKhacDm.dll
+extracted/BVST 6.0/TlNguonChiTraKhac.dll
+extracted/BVST 6.0/TlThoiDiemInBangKe.dll
+extracted/BVST 6.0/TlTuDongTachPhieuThu.dll
+extracted/BVST 6.0/TlTuDongThuChi.dll
+extracted/BVST 6.0/TlTyLeThuocVtKhacDm.dll
+extracted/BVST 6.0/ToDieuTri.dll
+extracted/BVST 6.0/TongHopBanLe.dll
+extracted/BVST 6.0/TongHopDonThuoc.dll
+extracted/BVST 6.0/TongHopGiaoBan.dll
+extracted/BVST 6.0/TongHopKhamBenh.dll
+extracted/BVST 6.0/TongHopThuChi.dll
+extracted/BVST 6.0/TongHopThuChiKhac.dll
+extracted/BVST 6.0/TonghopKCBBHYT.dll
+extracted/BVST 6.0/ToolThanhToan.dll
+extracted/BVST 6.0/TraCuuBnTreo.dll
+extracted/BVST 6.0/TraCuuChiPhi.dll
+extracted/BVST 6.0/TraCuuChungTuNhapXuat.dll
+extracted/BVST 6.0/TraCuuHieuQua.dll
+extracted/BVST 6.0/TraCuuSupport.dll
+extracted/BVST 6.0/TraCuuThuocItDung.dll
+extracted/BVST 6.0/TraCuuTon.dll
+extracted/BVST 6.0/TraLai.dll
+extracted/BVST 6.0/TraLaiNhaThuoc.dll
+extracted/BVST 6.0/TraLaiTuTruc.dll
+extracted/BVST 6.0/TraTonVeKho.dll
+extracted/BVST 6.0/TraVoPhieuDuTru.dll
+extracted/BVST 6.0/TreSoSinh.dll
+extracted/BVST 6.0/TrichSaoBenhAn.dll
+extracted/BVST 6.0/VNPTDSCore.dll
+extracted/BVST 6.0/Viettel-His.exe
+extracted/BVST 6.0/ViewDienBienYLenh.dll
+extracted/BVST 6.0/XETNGHIEM.HoTro.dll
+extracted/BVST 6.0/XETNGHIEM.LapKetQua.dll
+extracted/BVST 6.0/XETNGHIEM.NhanBenhPham.dll
+extracted/BVST 6.0/XMLHelper.dll
+extracted/BVST 6.0/XacNhanBH100.dll
+extracted/BVST 6.0/XacNhanNgheo.dll
+extracted/BVST 6.0/XacNhanTronVien.dll
+extracted/BVST 6.0/XemChiTietChuaBu.dll
+extracted/BVST 6.0/XemGiaDichVu.dll
+extracted/BVST 6.0/XemLichSuInGiay.dll
+extracted/BVST 6.0/XepPhongGiuong.dll
+extracted/BVST 6.0/XmlData.dll
+extracted/BVST 6.0/XmlTool.exe
+extracted/BVST 6.0/XuatDungChung.dll
+extracted/BVST 6.0/XuatHangHetLuongConTien.dll
+extracted/BVST 6.0/XuatKho.dll
+extracted/BVST 6.0/cls.ChamCong.dll
+extracted/BVST 6.0/eMCH.dll
+extracted/BVST 6.0/frmBanGiaoBenhAn.dll
+extracted/BVST 6.0/frmBieuDoChuyenDa.dll
+extracted/BVST 6.0/frmBieuDoGayMe.dll
+extracted/BVST 6.0/frmCDHAHoTro.dll
+extracted/BVST 6.0/frmDanhMucChiSo.dll
+extracted/BVST 6.0/frmDanhMucChung.dll
+extracted/BVST 6.0/frmDanhMucDichVu.dll
+extracted/BVST 6.0/frmDanhSachCDHA.dll
+extracted/BVST 6.0/frmFileExplorer.dll
+extracted/BVST 6.0/frmGioSuDungThuoc.dll
+extracted/BVST 6.0/frmInAnh.dll
+extracted/BVST 6.0/frmKhongKiemTraCLS.dll
+extracted/BVST 6.0/frmLapKetQuaTheoMau.dll
+extracted/BVST 6.0/frmLayAnh.dll
+extracted/BVST 6.0/frmMuonTraBenhAn.dll
+extracted/BVST 6.0/frmPhucHoiChucNang.dll
+extracted/BVST 6.0/frmQuanLyMau.dll
+extracted/BVST 6.0/frmSqlServer.dll
+extracted/BVST 6.0/frmTongHopBenhAn.dll
+extracted/BVST 6.0/frmTraCuuGiayTo.dll
+extracted/BVST 6.0/frmVatLyTriLieu.dll
+extracted/BVST 6.0/hangdoibn.exe
+extracted/BVST 6.0/itextsharp.dll
+extracted/BVST 6.0/kiemPhoi.dll
+extracted/BVST 6.0/libzkfpcsharp.dll
+extracted/BVST 6.0/log4net.dll
+extracted/BVST 6.0/wSigner.dll
+extracted/BVST 6.0/wSignerXML.dll
