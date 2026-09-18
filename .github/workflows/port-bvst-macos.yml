@@ -1,0 +1,539 @@
+name: BVST macOS ARM64 Port
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  BVST_FILE: downloads/BVST_FILE
+  EXTRACT_DIR: extracted
+  SOURCE_DIR: port-source
+  ANALYSIS_DIR: analysis
+  BUILD_DIR: build
+
+jobs:
+  prepare:
+    name: Extract and Decompile BVST
+    runs-on: ubuntu-latest
+
+    steps:
+      # ============================================================
+      # CHECKOUT
+      # ============================================================
+
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+          lfs: true
+
+      # ============================================================
+      # TOOLS
+      # ============================================================
+
+      - name: Install tools
+        run: |
+          sudo apt-get update
+
+          sudo apt-get install -y \
+            file \
+            unzip \
+            p7zip-full \
+            unrar-free \
+            binutils \
+            jq \
+            curl \
+            wget \
+            unzip \
+            git
+
+          git lfs install
+
+      # ============================================================
+      # LFS
+      # ============================================================
+
+      - name: Download BVST LFS object
+        run: |
+          git lfs pull --include="$BVST_FILE"
+
+          test -f "$BVST_FILE"
+
+          echo "File:"
+          ls -lh "$BVST_FILE"
+
+          echo "Type:"
+          file "$BVST_FILE"
+
+          echo "SHA256:"
+          sha256sum "$BVST_FILE"
+
+      # ============================================================
+      # VERIFY
+      # ============================================================
+
+      - name: Verify BVST
+        run: |
+          SHA="$(sha256sum "$BVST_FILE" | awk '{print $1}')"
+          SIZE="$(stat -c%s "$BVST_FILE")"
+
+          echo "SHA:  $SHA"
+          echo "SIZE: $SIZE"
+
+          test "$SHA" = \
+            "65982ba6e43a06b0530100eb1e8c7edb52b4a15a2198b8b8c92d04717f3a884e"
+
+          test "$SIZE" = "732396103"
+
+      # ============================================================
+      # EXTRACT
+      # ============================================================
+
+      - name: Extract BVST
+        run: |
+          rm -rf "$EXTRACT_DIR"
+          mkdir -p "$EXTRACT_DIR"
+
+          TYPE="$(file -b "$BVST_FILE")"
+
+          echo "$TYPE"
+
+          if echo "$TYPE" | grep -qi "RAR archive"; then
+            7z x "$BVST_FILE" -o"$EXTRACT_DIR" -y
+
+          elif echo "$TYPE" | grep -qi "Zip archive"; then
+            unzip -q "$BVST_FILE" -d "$EXTRACT_DIR"
+
+          elif echo "$TYPE" | grep -qi "7-zip archive"; then
+            7z x "$BVST_FILE" -o"$EXTRACT_DIR" -y
+
+          elif echo "$TYPE" | grep -qi "gzip compressed"; then
+            tar -xzf "$BVST_FILE" -C "$EXTRACT_DIR"
+
+          elif echo "$TYPE" | grep -qi "XZ compressed"; then
+            tar -xJf "$BVST_FILE" -C "$EXTRACT_DIR"
+
+          else
+            echo "Unsupported archive:"
+            echo "$TYPE"
+            exit 1
+          fi
+
+          echo
+          echo "Extracted files:"
+          find "$EXTRACT_DIR" -type f | wc -l
+
+      # ============================================================
+      # LOCATE BVST6
+      # ============================================================
+
+      - name: Locate BVST6.exe
+        run: |
+          mkdir -p "$ANALYSIS_DIR"
+
+          find "$EXTRACT_DIR" \
+            -type f \
+            -iname "BVST6.exe" \
+            -print \
+            | tee "$ANALYSIS_DIR/bvst6-location.txt"
+
+          BVST6="$(find "$EXTRACT_DIR" \
+            -type f \
+            -iname "BVST6.exe" \
+            | head -1)"
+
+          test -n "$BVST6"
+
+          echo "BVST6=$BVST6" >> "$GITHUB_ENV"
+
+          file "$BVST6"
+
+      # ============================================================
+      # DOWNLOAD ILSPY
+      # ============================================================
+
+      - name: Install ILSpy
+        run: |
+          mkdir -p tools
+
+          wget -q \
+            https://github.com/icsharpcode/ILSpy/releases/latest/download/ilspycmd-linux-x64.zip \
+            -O tools/ilspy.zip
+
+          unzip -q \
+            tools/ilspy.zip \
+            -d tools/ilspy
+
+          chmod +x tools/ilspy/ilspycmd
+
+          tools/ilspy/ilspycmd \
+            --help \
+            | head -30
+
+      # ============================================================
+      # DECOMPILE BVST6
+      # ============================================================
+
+      - name: Decompile BVST6
+        run: |
+          rm -rf "$SOURCE_DIR"
+          mkdir -p "$SOURCE_DIR"
+
+          tools/ilspy/ilspycmd \
+            "$BVST6" \
+            -p \
+            -o "$SOURCE_DIR/BVST6"
+
+          echo
+          echo "Decompiled source:"
+          find "$SOURCE_DIR/BVST6" -type f \
+            | head -200
+
+      # ============================================================
+      # DECOMPILE IMPORTANT DLLS
+      # ============================================================
+
+      - name: Locate core DLLs
+        run: |
+          mkdir -p "$SOURCE_DIR/dlls"
+
+          find "$EXTRACT_DIR" \
+            -type f \
+            \( \
+              -iname "LrMain.dll" \
+              -o -iname "LrSystem.dll" \
+              -o -iname "LrComponents.dll" \
+              -o -iname "CommonComponents.dll" \
+              -o -iname "CommonPrint.dll" \
+              -o -iname "DirectShowLib.dll" \
+              -o -iname "AForge.Video.DirectShow.dll" \
+              -o -iname "LrCapture.dll" \
+            \) \
+            -print \
+            | tee "$ANALYSIS_DIR/core-dlls.txt"
+
+      # ============================================================
+      # WINDOWS API ANALYSIS
+      # ============================================================
+
+      - name: Analyze Windows APIs
+        run: |
+          {
+            echo "# Windows API Usage"
+            echo
+
+            grep -RniE \
+              "DllImport|kernel32|user32|gdi32|advapi32|shell32|ole32|oleaut32|comdlg32|winmm|ws2_32" \
+              "$SOURCE_DIR" \
+              2>/dev/null \
+              | head -500 || true
+
+          } > "$ANALYSIS_DIR/windows-api.md"
+
+      # ============================================================
+      # WINFORMS ANALYSIS
+      # ============================================================
+
+      - name: Analyze WinForms
+        run: |
+          {
+            echo "# Windows Forms Usage"
+            echo
+
+            grep -RniE \
+              "System\.Windows\.Forms|Form\b|Control\b|Application\.Run|UserControl|WinForms" \
+              "$SOURCE_DIR" \
+              2>/dev/null \
+              | head -1000 || true
+
+          } > "$ANALYSIS_DIR/winforms.md"
+
+      # ============================================================
+      # DIRECTSHOW
+      # ============================================================
+
+      - name: Analyze DirectShow
+        run: |
+          {
+            echo "# DirectShow / AForge Usage"
+            echo
+
+            grep -RniE \
+              "DirectShow|DirectShowLib|AForge|VideoCaptureDevice|FilterGraph|CaptureGraphBuilder|DsDevice" \
+              "$SOURCE_DIR" \
+              2>/dev/null \
+              | head -1000 || true
+
+          } > "$ANALYSIS_DIR/directshow.md"
+
+      # ============================================================
+      # FLASH
+      # ============================================================
+
+      - name: Analyze Flash
+        run: |
+          {
+            echo "# Flash / SWF Usage"
+            echo
+
+            grep -RniE \
+              "Shockwave|Flash|SWF|Pepper|PPAPI|ActiveX" \
+              "$SOURCE_DIR" \
+              2>/dev/null \
+              | head -1000 || true
+
+          } > "$ANALYSIS_DIR/flash.md"
+
+      # ============================================================
+      # TARGET FRAMEWORK
+      # ============================================================
+
+      - name: Detect .NET framework
+        run: |
+          {
+            echo "# .NET Framework Detection"
+            echo
+
+            find "$SOURCE_DIR" \
+              -type f \
+              \( \
+                -iname "*.csproj" \
+                -o -iname "*.config" \
+                -o -iname "*.sln" \
+              \) \
+              -print
+
+            echo
+            echo "## TargetFramework"
+
+            grep -RniE \
+              "TargetFramework|TargetFrameworkVersion|net[0-9]|\.NET Framework" \
+              "$SOURCE_DIR" \
+              2>/dev/null \
+              | head -500 || true
+
+          } > "$ANALYSIS_DIR/dotnet.md"
+
+      # ============================================================
+      # CREATE PORT REPORT
+      # ============================================================
+
+      - name: Generate port report
+        run: |
+          cat > "$ANALYSIS_DIR/MACOS_PORT.md" <<'EOF'
+          # BVST 6.0 → macOS ARM64
+
+          ## Target
+
+          - Apple Silicon
+          - ARM64
+          - macOS 12 Monterey
+
+          ## Current application
+
+          BVST6.exe is a Windows x86 .NET application.
+
+          ## Major portability areas
+
+          ### .NET
+
+          The application contains managed .NET assemblies.
+
+          Managed code may be reusable after migration to a modern
+          cross-platform .NET target.
+
+          ### Windows Forms
+
+          BVST uses System.Windows.Forms.
+
+          Windows Forms code must be evaluated for migration to a
+          cross-platform UI framework or rewritten using a macOS UI layer.
+
+          ### Windows API
+
+          P/Invoke and COM dependencies must be replaced or isolated.
+
+          ### DirectShow
+
+          DirectShow/AForge components are Windows-specific.
+
+          Camera/video functionality will require a macOS implementation,
+          potentially using AVFoundation.
+
+          ### Flash
+
+          SWF/Flash functionality was detected.
+
+          Flash runtime dependencies must not be assumed to work on
+          modern macOS. A maintained SWF implementation such as Ruffle
+          may need to replace the original runtime where technically
+          compatible.
+
+          ## Build strategy
+
+          1. Recover/decompile managed source.
+          2. Identify the actual application entry point.
+          3. Identify the minimum dependency graph.
+          4. Migrate the managed project to modern .NET where possible.
+          5. Isolate Windows-specific APIs.
+          6. Replace Windows Forms UI.
+          7. Replace DirectShow.
+          8. Replace Flash runtime integration.
+          9. Build ARM64.
+          10. Package as BVST.app.
+
+          ## Important
+
+          This report is an intermediate porting analysis.
+
+          Decompilation alone does not guarantee that the resulting
+          project can be legally or technically rebuilt without the
+          original source/dependencies.
+          EOF
+
+      # ============================================================
+      # UPLOAD SOURCE + ANALYSIS
+      # ============================================================
+
+      - name: Upload port analysis
+        uses: actions/upload-artifact@v6
+        with:
+          name: BVST-macOS-port-analysis
+          path: |
+            analysis/
+            port-source/
+          retention-days: 30
+
+      # ============================================================
+      # COMMIT ANALYSIS ONLY
+      # ============================================================
+
+      - name: Commit analysis
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add analysis/
+
+          if git diff --cached --quiet; then
+            echo "No analysis changes."
+            exit 0
+          fi
+
+          git commit -m "Analyze BVST for macOS ARM64"
+          git push origin main
+
+
+  # ==================================================================
+  # MACOS BUILD TEST
+  # ==================================================================
+
+  build-macos:
+    name: Test macOS ARM64 Build
+    needs: prepare
+    runs-on: macos-14
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+          lfs: true
+
+      - name: Download BVST
+        run: |
+          git lfs install
+          git lfs pull --include="downloads/BVST_FILE"
+
+      - name: Install .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: |
+            8.0.x
+
+      - name: Show environment
+        run: |
+          echo "Runner:"
+          uname -a
+
+          echo
+          echo "Architecture:"
+          uname -m
+
+          echo
+          echo ".NET:"
+          dotnet --info
+
+      # ============================================================
+      # BUILD DISCOVERY
+      # ============================================================
+
+      - name: Locate projects
+        run: |
+          mkdir -p extracted
+
+          file downloads/BVST_FILE
+
+          echo "The decompiled project is produced by the prepare job."
+          echo "The first run is intentionally a portability discovery run."
+
+      # ============================================================
+      # CREATE BUILD REPORT
+      # ============================================================
+
+      - name: Generate macOS build status
+        run: |
+          mkdir -p build
+
+          cat > build/MACOS_BUILD_STATUS.md <<'EOF'
+          # BVST macOS Build
+
+          ## Target
+
+          macOS ARM64 / Apple Silicon.
+
+          ## Current state
+
+          The original BVST executable is a Windows x86/.NET application.
+
+          A native macOS executable cannot be produced merely by changing
+          the PE architecture.
+
+          The following components require migration:
+
+          - Windows Forms
+          - Windows API / P/Invoke
+          - COM
+          - DirectShow
+          - AForge.Video.DirectShow
+          - Flash/ActiveX integration
+
+          The decompiled project and analysis reports from the prepare job
+          must be used to migrate the application to a cross-platform
+          .NET target.
+
+          ## Next implementation stage
+
+          Create a new macOS-compatible project and progressively move
+          portable managed code into it.
+
+          Target runtime:
+
+              osx-arm64
+
+          Target platform:
+
+              macOS 12 Monterey
+          EOF
+
+          cat build/MACOS_BUILD_STATUS.md
+
+      - name: Upload build status
+        uses: actions/upload-artifact@v6
+        with:
+          name: BVST-macOS-build-status
+          path: build/
+          retention-days: 30
