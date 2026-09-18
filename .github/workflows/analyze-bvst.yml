@@ -1,0 +1,363 @@
+name: Analyze BVST Archive
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+
+    steps:
+      # --------------------------------------------------
+      # 1. Checkout repository + Git LFS
+      # --------------------------------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+          lfs: true
+
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            file \
+            unzip \
+            p7zip-full \
+            binutils \
+            binutils-common \
+            xxd \
+            strings
+
+          git lfs install
+
+      # --------------------------------------------------
+      # 2. Download actual LFS object
+      # --------------------------------------------------
+      - name: Download LFS file
+        run: |
+          git lfs pull
+
+          echo "=== File ==="
+          ls -lh downloads/BVST_FILE
+
+          echo "=== File type ==="
+          file downloads/BVST_FILE
+
+          echo "=== SHA256 ==="
+          sha256sum downloads/BVST_FILE
+
+      # --------------------------------------------------
+      # 3. Detect archive type
+      # --------------------------------------------------
+      - name: Detect archive
+        run: |
+          mkdir -p analysis
+
+          file downloads/BVST_FILE \
+            | tee analysis/file-type.txt
+
+          echo "" >> analysis/file-type.txt
+
+          echo "=== Magic bytes ===" \
+            | tee -a analysis/file-type.txt
+
+          xxd -l 32 downloads/BVST_FILE \
+            | tee -a analysis/file-type.txt
+
+      # --------------------------------------------------
+      # 4. Extract
+      # --------------------------------------------------
+      - name: Extract archive
+        run: |
+          rm -rf extracted
+          mkdir -p extracted
+
+          TYPE="$(file -b downloads/BVST_FILE)"
+
+          echo "Detected: $TYPE"
+
+          if echo "$TYPE" | grep -qi "Zip archive"; then
+            unzip -q downloads/BVST_FILE -d extracted
+
+          elif echo "$TYPE" | grep -qi "7-zip archive"; then
+            7z x downloads/BVST_FILE -oextracted
+
+          elif echo "$TYPE" | grep -qi "RAR archive"; then
+            7z x downloads/BVST_FILE -oextracted
+
+          elif echo "$TYPE" | grep -qi "gzip compressed"; then
+            tar -xzf downloads/BVST_FILE -C extracted
+
+          elif echo "$TYPE" | grep -qi "POSIX tar archive"; then
+            tar -xf downloads/BVST_FILE -C extracted
+
+          else
+            echo "Unknown archive type"
+            exit 1
+          fi
+
+          echo "=== Extracted ==="
+          find extracted -type f | head -200
+
+      # --------------------------------------------------
+      # 5. Complete file listing
+      # --------------------------------------------------
+      - name: Generate file list
+        run: |
+          find extracted -type f \
+            -printf '%p\t%s bytes\n' \
+            | sort \
+            > analysis/file-list.txt
+
+          echo "Files:"
+          wc -l analysis/file-list.txt
+
+      # --------------------------------------------------
+      # 6. Detect executable formats
+      # --------------------------------------------------
+      - name: Analyze binaries
+        run: |
+          {
+            echo "========================================"
+            echo "EXECUTABLE / BINARY ANALYSIS"
+            echo "========================================"
+            echo
+
+            while IFS= read -r file; do
+              TYPE="$(file -b "$file")"
+
+              if echo "$TYPE" | grep -Eq \
+                "executable|shared object|Mach-O|PE32|ELF"; then
+
+                echo
+                echo "----------------------------------------"
+                echo "$file"
+                echo "----------------------------------------"
+                echo "$TYPE"
+
+                if command -v objdump >/dev/null 2>&1; then
+                  objdump -f "$file" 2>/dev/null || true
+                fi
+              fi
+            done < <(find extracted -type f)
+
+          } | tee analysis/binaries.txt
+
+      # --------------------------------------------------
+      # 7. Find Windows / macOS / Linux components
+      # --------------------------------------------------
+      - name: Detect platform components
+        run: |
+          {
+            echo "========================================"
+            echo "PLATFORM DETECTION"
+            echo "========================================"
+            echo
+
+            echo "=== Windows ==="
+            find extracted -type f \( \
+              -iname "*.exe" -o \
+              -iname "*.dll" -o \
+              -iname "*.msi" \
+            \) -print
+
+            echo
+            echo "=== macOS ==="
+            find extracted -type f \( \
+              -iname "*.dylib" -o \
+              -iname "*.app" -o \
+              -iname "*.framework" \
+            \) -print
+
+            echo
+            echo "=== Linux ==="
+            find extracted -type f \( \
+              -iname "*.so" -o \
+              -iname "*.AppImage" \
+            \) -print
+
+            echo
+            echo "=== Flash ==="
+            find extracted -type f \( \
+              -iname "*.swf" -o \
+              -iname "*flash*" -o \
+              -iname "*pepper*" \
+            \) -print
+
+          } | tee analysis/platform-components.txt
+
+      # --------------------------------------------------
+      # 8. Search important technologies
+      # --------------------------------------------------
+      - name: Search technologies
+        run: |
+          {
+            echo "========================================"
+            echo "TECHNOLOGY DETECTION"
+            echo "========================================"
+            echo
+
+            echo "=== Electron ==="
+            grep -Ril \
+              -E "electron|electron.asar" \
+              extracted 2>/dev/null || true
+
+            echo
+            echo "=== Chromium / CEF ==="
+            grep -Ril \
+              -E "chromium|cef|chrome_elf" \
+              extracted 2>/dev/null || true
+
+            echo
+            echo "=== PepperFlash ==="
+            grep -Ril \
+              -E "pepperflash|pepper_flash|ppapi" \
+              extracted 2>/dev/null || true
+
+            echo
+            echo "=== Ruffle ==="
+            grep -Ril \
+              -E "ruffle" \
+              extracted 2>/dev/null || true
+
+            echo
+            echo "=== Qt ==="
+            grep -Ril \
+              -E "Qt5|Qt6|QtCore|QtGui|QtWidgets" \
+              extracted 2>/dev/null || true
+
+            echo
+            echo "=== DirectX ==="
+            grep -Ril \
+              -E "DirectX|d3d11|d3d12|d3d9" \
+              extracted 2>/dev/null || true
+
+            echo
+            echo "=== Vulkan ==="
+            grep -Ril \
+              -E "vulkan|MoltenVK" \
+              extracted 2>/dev/null || true
+
+          } | tee analysis/technologies.txt
+
+      # --------------------------------------------------
+      # 9. File statistics
+      # --------------------------------------------------
+      - name: Generate statistics
+        run: |
+          {
+            echo "========================================"
+            echo "BVST ANALYSIS"
+            echo "========================================"
+            echo
+
+            echo "Archive:"
+            ls -lh downloads/BVST_FILE
+
+            echo
+            echo "SHA256:"
+            sha256sum downloads/BVST_FILE
+
+            echo
+            echo "Extracted files:"
+            find extracted -type f | wc -l
+
+            echo
+            echo "Extracted size:"
+            du -sh extracted
+
+            echo
+            echo "Extensions:"
+            find extracted -type f \
+              | sed 's/.*\.//' \
+              | tr '[:upper:]' '[:lower:]' \
+              | sort \
+              | uniq -c \
+              | sort -rn \
+              | head -100
+
+          } | tee analysis/summary.txt
+
+      # --------------------------------------------------
+      # 10. Create macOS-oriented report
+      # --------------------------------------------------
+      - name: Generate macOS report
+        run: |
+          cat > analysis/MACOS_ANALYSIS.md <<'EOF'
+          # BVST macOS Analysis
+
+          ## Objective
+
+          Analyze BVST archive for potential macOS / Apple Silicon support.
+
+          ## Archive
+
+          See `file-type.txt` and `summary.txt`.
+
+          ## Platform components
+
+          See `platform-components.txt`.
+
+          ## Binary analysis
+
+          See `binaries.txt`.
+
+          ## Technology detection
+
+          See `technologies.txt`.
+
+          ## macOS conversion checklist
+
+          - [ ] Identify main executable
+          - [ ] Determine CPU architecture
+          - [ ] Check x86_64 binaries
+          - [ ] Check arm64 binaries
+          - [ ] Check Universal binaries
+          - [ ] Identify Windows DLL dependencies
+          - [ ] Identify DirectX dependencies
+          - [ ] Identify Flash/PepperFlash
+          - [ ] Identify Electron/Chromium/CEF
+          - [ ] Identify Qt
+          - [ ] Identify OpenGL/Vulkan
+          - [ ] Determine whether source code exists
+          - [ ] Determine build system
+          - [ ] Determine macOS 12 compatibility
+          - [ ] Determine Apple Silicon compatibility
+
+          ## Next step
+
+          The detailed reports should be inspected to determine whether BVST
+          can be ported, wrapped, translated, or rebuilt for macOS ARM64.
+          EOF
+
+      # --------------------------------------------------
+      # 11. Commit analysis results
+      # --------------------------------------------------
+      - name: Commit analysis
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add analysis/
+
+          if git diff --cached --quiet; then
+            echo "No analysis changes."
+            exit 0
+          fi
+
+          git commit -m "Analyze BVST archive"
+          git push origin main
+
+      # --------------------------------------------------
+      # 12. Upload complete analysis as artifact
+      # --------------------------------------------------
+      - name: Upload analysis artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: BVST-analysis
+          path: analysis/
+          retention-days: 30
