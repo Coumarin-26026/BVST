@@ -1,0 +1,48 @@
+name: Download Google Drive File
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  download-and-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Download file from Google Drive
+        env:
+          DRIVE_URL: "https://drive.usercontent.google.com/download?id=1hVVMOJDJFuEi6PjtjICRwFFaZjmJ3xf4&export=download&authuser=0&confirm=t&uuid=cd47bb76-e43e-4023-a390-5f3bf06ecbce&at=AMrWOn0yQaGjaQd7bSnQCpd4LplY:1789731884633"
+        run: |
+          mkdir -p downloads
+
+          curl -L \
+            --fail \
+            --retry 5 \
+            --retry-delay 5 \
+            "$DRIVE_URL" \
+            -o downloads/BVST_FILE
+
+          ls -lh downloads/BVST_FILE
+          file downloads/BVST_FILE
+
+      - name: Commit file
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add downloads/BVST_FILE
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+
+          git commit -m "Add file downloaded from Google Drive"
+          git push origin main
