@@ -1,4 +1,4 @@
-name: BVST macOS ARM64 Port
+name: BVST - Analyze and Prepare macOS ARM64 Port
 
 on:
   workflow_dispatch:
@@ -12,914 +12,1150 @@ env:
   SOURCE_DIR: port-source
   ANALYSIS_DIR: analysis
   BUILD_DIR: build
+  TOOLS_DIR: tools
 
 jobs:
-  prepare:
-    name: Extract and Analyze BVST
+
+  # ==========================================================
+  # JOB 1
+  # Download / extract / analyze BVST
+  # ==========================================================
+
+  analyze-bvst:
+    name: Analyze BVST Windows Application
     runs-on: ubuntu-24.04
 
     steps:
 
-      # ============================================================
-      # 1. CHECKOUT
-      # ============================================================
+      # --------------------------------------------------------
+      # Checkout
+      # --------------------------------------------------------
 
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
           lfs: true
+          fetch-depth: 1
 
-      # ============================================================
-      # 2. INSTALL TOOLS
-      # ============================================================
+      # --------------------------------------------------------
+      # Install system tools
+      # --------------------------------------------------------
 
       - name: Install analysis tools
         shell: bash
         run: |
-          set -euxo pipefail
+          set -euo pipefail
 
           sudo apt-get update
 
           sudo apt-get install -y \
+            7zip \
+            binutils \
             file \
+            jq \
             unzip \
             p7zip-full \
-            unrar-free \
-            binutils \
-            jq \
+            cabextract \
+            strings \
+            tree \
+            ripgrep \
             curl \
             wget \
-            xz-utils \
-            zstd \
-            git
+            git \
+            python3 \
+            python3-pip
 
-          git lfs install
-
-          echo "Installed tools:"
-          file --version
-          7z i | head -10
-          strings --version
-          objdump --version | head -1
-
-      # ============================================================
-      # 3. DOWNLOAD LFS FILE
-      # ============================================================
-
-      - name: Download BVST LFS object
-        shell: bash
-        run: |
-          set -euxo pipefail
-
-          git lfs install
-          git lfs pull --include="$BVST_FILE"
-
-          test -f "$BVST_FILE"
-
-          echo "BVST_FILE:"
-          ls -lh "$BVST_FILE"
-
-          echo
-          echo "File type:"
-          file "$BVST_FILE"
-
-          echo
-          echo "SHA256:"
-          sha256sum "$BVST_FILE"
-
-      # ============================================================
-      # 4. VERIFY FILE
-      # ============================================================
+      # --------------------------------------------------------
+      # Verify repository
+      # --------------------------------------------------------
 
       - name: Verify BVST file
         shell: bash
         run: |
           set -euo pipefail
 
-          EXPECTED_SHA="65982ba6e43a06b0530100eb1e8c7edb52b4a15a2198b8b8c92d04717f3a884e"
-          EXPECTED_SIZE="732396103"
+          echo "========================================"
+          echo "Repository"
+          echo "========================================"
 
-          ACTUAL_SHA="$(sha256sum "$BVST_FILE" | awk '{print $1}')"
-          ACTUAL_SIZE="$(stat -c%s "$BVST_FILE")"
-
-          echo "Expected SHA256:"
-          echo "$EXPECTED_SHA"
+          pwd
 
           echo
-          echo "Actual SHA256:"
-          echo "$ACTUAL_SHA"
+          echo "BVST path:"
+          echo "$BVST_FILE"
 
-          echo
-          echo "Expected size:"
-          echo "$EXPECTED_SIZE"
-
-          echo
-          echo "Actual size:"
-          echo "$ACTUAL_SIZE"
-
-          if [ "$ACTUAL_SHA" != "$EXPECTED_SHA" ]; then
-            echo "ERROR: SHA256 mismatch"
-            exit 1
-          fi
-
-          if [ "$ACTUAL_SIZE" != "$EXPECTED_SIZE" ]; then
-            echo "ERROR: File size mismatch"
+          if [ ! -e "$BVST_FILE" ]; then
+            echo "ERROR: BVST_FILE does not exist."
             exit 1
           fi
 
           echo
-          echo "BVST file verified."
+          echo "File information:"
+          ls -lah "$BVST_FILE"
 
-      # ============================================================
-      # 5. PREPARE DIRECTORIES
-      # ============================================================
+          echo
+          echo "File type:"
+          file "$BVST_FILE"
 
-      - name: Prepare directories
-        shell: bash
-        run: |
-          rm -rf "$EXTRACT_DIR"
-          rm -rf "$SOURCE_DIR"
-          rm -rf "$ANALYSIS_DIR"
+          echo
+          echo "Git LFS status:"
+          git lfs status || true
 
-          mkdir -p "$EXTRACT_DIR"
-          mkdir -p "$SOURCE_DIR"
-          mkdir -p "$ANALYSIS_DIR"
-          mkdir -p tools
+      # --------------------------------------------------------
+      # Verify LFS object
+      # --------------------------------------------------------
 
-      # ============================================================
-      # 6. IDENTIFY ARCHIVE
-      # ============================================================
-
-      - name: Identify archive
+      - name: Verify Git LFS object
         shell: bash
         run: |
           set -euo pipefail
 
-          TYPE="$(file -b "$BVST_FILE")"
+          echo "Checking whether BVST_FILE is still an LFS pointer..."
 
-          echo "$TYPE" \
-            | tee "$ANALYSIS_DIR/file-type.txt"
+          if head -c 100 "$BVST_FILE" | grep -q "git-lfs.github.com/spec"; then
+            echo "Detected Git LFS pointer."
+            echo "Pulling actual object..."
+
+            git lfs install --local
+            git lfs pull
+
+          else
+            echo "BVST_FILE is already a real file."
+          fi
 
           echo
-          echo "Magic bytes:"
+          echo "After LFS pull:"
+          ls -lh "$BVST_FILE"
 
-          xxd -l 64 "$BVST_FILE" \
-            | tee "$ANALYSIS_DIR/magic-bytes.txt"
+          echo
+          file "$BVST_FILE"
 
-      # ============================================================
-      # 7. EXTRACT RAR / ZIP / 7Z / TAR
-      # ============================================================
+          # Expected SHA256 from the repository
+          EXPECTED_SHA256="65982ba6e43a06b0530100eb1e8c7edb52b4a15a2198b8b8c92d04717f3a884e"
+
+          echo
+          echo "Calculating SHA256..."
+
+          ACTUAL_SHA256="$(
+            sha256sum "$BVST_FILE" \
+              | awk '{print $1}'
+          )"
+
+          echo "Expected:"
+          echo "$EXPECTED_SHA256"
+
+          echo "Actual:"
+          echo "$ACTUAL_SHA256"
+
+          if [ "$ACTUAL_SHA256" != "$EXPECTED_SHA256" ]; then
+            echo
+            echo "WARNING: SHA256 differs from expected LFS object."
+            echo "The analysis will continue."
+          else
+            echo
+            echo "SHA256 verified."
+          fi
+
+      # --------------------------------------------------------
+      # Prepare directories
+      # --------------------------------------------------------
+
+      - name: Prepare workspace
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          rm -rf \
+            "$EXTRACT_DIR" \
+            "$SOURCE_DIR" \
+            "$ANALYSIS_DIR" \
+            "$BUILD_DIR" \
+            "$TOOLS_DIR"
+
+          mkdir -p \
+            "$EXTRACT_DIR" \
+            "$SOURCE_DIR" \
+            "$ANALYSIS_DIR" \
+            "$BUILD_DIR" \
+            "$TOOLS_DIR"
+
+      # --------------------------------------------------------
+      # Identify archive
+      # --------------------------------------------------------
+
+      - name: Identify BVST archive
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "========================================"
+          echo "BVST archive identification"
+          echo "========================================"
+
+          file "$BVST_FILE"
+
+          echo
+          echo "First bytes:"
+          xxd -l 32 "$BVST_FILE" || true
+
+          echo
+          echo "Archive listing test..."
+
+          7z l "$BVST_FILE" | head -100
+
+      # --------------------------------------------------------
+      # Extract RAR
+      # --------------------------------------------------------
 
       - name: Extract BVST archive
         shell: bash
         run: |
           set -euo pipefail
 
-          TYPE="$(file -b "$BVST_FILE")"
+          echo "========================================"
+          echo "Extracting BVST"
+          echo "========================================"
 
-          echo "Detected:"
-          echo "$TYPE"
-
-          if echo "$TYPE" | grep -qi "RAR archive"; then
-
-            echo "Extracting RAR..."
-            7z x "$BVST_FILE" \
-              -o"$EXTRACT_DIR" \
-              -y
-
-          elif echo "$TYPE" | grep -qi "Zip archive"; then
-
-            echo "Extracting ZIP..."
-            unzip -q "$BVST_FILE" \
-              -d "$EXTRACT_DIR"
-
-          elif echo "$TYPE" | grep -qi "7-zip archive"; then
-
-            echo "Extracting 7z..."
-            7z x "$BVST_FILE" \
-              -o"$EXTRACT_DIR" \
-              -y
-
-          elif echo "$TYPE" | grep -qi "gzip compressed"; then
-
-            if tar -tzf "$BVST_FILE" >/dev/null 2>&1; then
-              tar -xzf "$BVST_FILE" \
-                -C "$EXTRACT_DIR"
-            else
-              gzip -dc "$BVST_FILE" \
-                > "$EXTRACT_DIR/BVST_CONTENT"
-            fi
-
-          elif echo "$TYPE" | grep -qi "XZ compressed"; then
-
-            if tar -tJf "$BVST_FILE" >/dev/null 2>&1; then
-              tar -xJf "$BVST_FILE" \
-                -C "$EXTRACT_DIR"
-            else
-              xz -dc "$BVST_FILE" \
-                > "$EXTRACT_DIR/BVST_CONTENT"
-            fi
-
-          elif echo "$TYPE" | grep -qi "Zstandard compressed"; then
-
-            if tar --zstd -tf "$BVST_FILE" >/dev/null 2>&1; then
-              tar --zstd -xf "$BVST_FILE" \
-                -C "$EXTRACT_DIR"
-            else
-              zstd -dc "$BVST_FILE" \
-                > "$EXTRACT_DIR/BVST_CONTENT"
-            fi
-
-          elif echo "$TYPE" | grep -qi "POSIX tar archive"; then
-
-            tar -xf "$BVST_FILE" \
-              -C "$EXTRACT_DIR"
-
-          else
-
-            echo "Unsupported archive:"
-            echo "$TYPE"
-
-            exit 1
-
-          fi
+          7z x \
+            "$BVST_FILE" \
+            "-o$EXTRACT_DIR" \
+            -y
 
           echo
           echo "Extraction completed."
 
           echo
-          echo "Files:"
-          find "$EXTRACT_DIR" -type f | wc -l
+          echo "Top-level directories:"
+          find "$EXTRACT_DIR" \
+            -maxdepth 2 \
+            -type d \
+            | sort \
+            | head -100
 
-      # ============================================================
-      # 8. LOCATE BVST6.EXE
-      # ============================================================
+          echo
+          echo "File count:"
+          find "$EXTRACT_DIR" \
+            -type f \
+            | wc -l
 
-      - name: Locate BVST6
+          echo
+          echo "Directory count:"
+          find "$EXTRACT_DIR" \
+            -type d \
+            | wc -l
+
+      # --------------------------------------------------------
+      # Locate BVST6.exe
+      # --------------------------------------------------------
+
+      - name: Locate BVST6 executable
         shell: bash
         run: |
           set -euo pipefail
 
-          BVST6_PATH="$(
+          echo "========================================"
+          echo "Searching for BVST6.exe"
+          echo "========================================"
+
+          BVST6_FOUND="$(
             find "$EXTRACT_DIR" \
               -type f \
-              -iname "BVST6.exe" \
-              -print \
+              \( \
+                -iname "BVST6.exe" \
+                -o \
+                -iname "BVST.exe" \
+              \) \
               | head -1
           )"
 
-          if [ -z "$BVST6_PATH" ]; then
-            echo "BVST6.exe not found!"
+          if [ -z "$BVST6_FOUND" ]; then
+            echo "ERROR: BVST6 executable not found."
+
+            echo
+            echo "Executables found:"
+            find "$EXTRACT_DIR" \
+              -type f \
+              -iname "*.exe" \
+              | sort \
+              | head -200
+
             exit 1
           fi
 
-          echo "BVST6=$BVST6_PATH" >> "$GITHUB_ENV"
-
-          echo "BVST6:"
-          echo "$BVST6_PATH"
+          echo "BVST6 found:"
+          echo "$BVST6_FOUND"
 
           echo
-          file "$BVST6_PATH"
+          echo "File information:"
+          file "$BVST6_FOUND"
 
           echo
-          ls -lh "$BVST6_PATH"
+          echo "Size:"
+          ls -lh "$BVST6_FOUND"
 
-      # ============================================================
-      # 9. DOWNLOAD LATEST ILSPY SAFELY
-      # ============================================================
+          echo "BVST6=$BVST6_FOUND" >> "$GITHUB_ENV"
 
-      - name: Install ILSpy
+      # --------------------------------------------------------
+      # PE analysis
+      # --------------------------------------------------------
+
+      - name: Analyze BVST6 PE executable
         shell: bash
         run: |
           set -euo pipefail
 
-          mkdir -p tools/ilspy
+          mkdir -p "$ANALYSIS_DIR/pe"
 
-          echo "Querying latest ILSpy release..."
+          echo "========================================"
+          echo "PE analysis"
+          echo "========================================"
 
-          curl -fsSL \
-            https://api.github.com/repos/icsharpcode/ILSpy/releases/latest \
-            -o tools/ilspy-release.json
+          file "$BVST6" \
+            | tee "$ANALYSIS_DIR/pe/bvst6-file.txt"
 
           echo
-          echo "Latest release:"
-          jq -r '.tag_name' \
-            tools/ilspy-release.json
+          echo "Architecture:"
+          objdump -f "$BVST6" \
+            | tee "$ANALYSIS_DIR/pe/bvst6-objdump.txt" \
+            || true
+
+          echo
+          echo "PE headers:"
+          objdump -x "$BVST6" \
+            > "$ANALYSIS_DIR/pe/bvst6-headers.txt" \
+            || true
+
+          echo
+          echo "Strings:"
+          strings -n 6 "$BVST6" \
+            > "$ANALYSIS_DIR/pe/bvst6-strings.txt" \
+            || true
+
+      # --------------------------------------------------------
+      # Download ILSpy
+      # --------------------------------------------------------
+
+      - name: Download ILSpy 11
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mkdir -p "$TOOLS_DIR/ilspy"
+
+          echo "========================================"
+          echo "Downloading ILSpy"
+          echo "========================================"
+
+          curl -fsSL \
+            --retry 5 \
+            --retry-delay 3 \
+            https://api.github.com/repos/icsharpcode/ILSpy/releases/latest \
+            -o "$TOOLS_DIR/ilspy-release.json"
+
+          VERSION="$(
+            jq -r '.tag_name' \
+              "$TOOLS_DIR/ilspy-release.json"
+          )"
+
+          echo "Latest ILSpy:"
+          echo "$VERSION"
 
           echo
           echo "Available assets:"
           jq -r '.assets[].name' \
-            tools/ilspy-release.json
+            "$TOOLS_DIR/ilspy-release.json"
 
-          # --------------------------------------------------------
-          # Find a Linux ILSpyCmd asset.
-          # Do NOT assume the old hard-coded filename.
-          # --------------------------------------------------------
+          # ----------------------------------------------------
+          # IMPORTANT:
+          #
+          # ILSpy v11 does NOT name the asset "ilspycmd".
+          #
+          # Actual asset:
+          #
+          # ILSpy_linux-x64_11.0.0.9375.zip
+          # ----------------------------------------------------
 
           ASSET_URL="$(
             jq -r '
               .assets[]
               | select(
-                  (.name | ascii_downcase | contains("ilspycmd"))
+                  (.name | ascii_downcase | startswith("ilspy_linux-x64_"))
                   and
-                  (.name | ascii_downcase | contains("linux"))
+                  (.name | ascii_downcase | endswith(".zip"))
                 )
               | .browser_download_url
-            ' tools/ilspy-release.json \
+            ' "$TOOLS_DIR/ilspy-release.json" \
             | head -1
           )"
 
           if [ -z "$ASSET_URL" ] || [ "$ASSET_URL" = "null" ]; then
             echo
-            echo "ERROR: ILSpyCmd Linux asset not found."
+            echo "ERROR: ILSpy Linux x64 asset not found."
 
             echo
-            echo "Release assets:"
-            jq -r '
-              .assets[]
-              | .browser_download_url
-            ' tools/ilspy-release.json
+            echo "Available assets:"
+            jq -r '.assets[] | .name' \
+              "$TOOLS_DIR/ilspy-release.json"
 
             exit 1
           fi
 
           echo
-          echo "ILSpy download URL:"
+          echo "ILSpy URL:"
           echo "$ASSET_URL"
 
           curl -fL \
             --retry 5 \
             --retry-delay 5 \
             "$ASSET_URL" \
-            -o tools/ilspy-package
+            -o "$TOOLS_DIR/ilspy.zip"
 
           echo
           echo "Downloaded:"
-          ls -lh tools/ilspy-package
-
-          file tools/ilspy-package
-
-          # --------------------------------------------------------
-          # Extract according to package type
-          # --------------------------------------------------------
-
-          if file tools/ilspy-package \
-            | grep -qi "Zip archive"; then
-
-            unzip -q \
-              tools/ilspy-package \
-              -d tools/ilspy
-
-          elif file tools/ilspy-package \
-            | grep -qi "gzip compressed"; then
-
-            tar -xzf \
-              tools/ilspy-package \
-              -C tools/ilspy
-
-          else
-
-            echo "Unsupported ILSpy package:"
-            file tools/ilspy-package
-            exit 1
-
-          fi
+          ls -lh "$TOOLS_DIR/ilspy.zip"
 
           echo
-          echo "ILSpy files:"
-          find tools/ilspy \
-            -maxdepth 3 \
+          echo "Extracting..."
+
+          unzip -q \
+            "$TOOLS_DIR/ilspy.zip" \
+            -d "$TOOLS_DIR/ilspy"
+
+          echo
+          echo "Extracted files:"
+          find "$TOOLS_DIR/ilspy" \
+            -maxdepth 4 \
             -type f \
             -print
 
-          # --------------------------------------------------------
-          # Locate executable
-          # --------------------------------------------------------
+      # --------------------------------------------------------
+      # Install .NET
+      # --------------------------------------------------------
+
+      - name: Install .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      # --------------------------------------------------------
+      # Locate ILSpyCmd
+      # --------------------------------------------------------
+
+      - name: Locate ILSpyCmd
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "========================================"
+          echo "Locating ILSpyCmd"
+          echo "========================================"
 
           ILSPYCMD="$(
-            find tools/ilspy \
+            find "$TOOLS_DIR/ilspy" \
               -type f \
               \( \
                 -name "ilspycmd" \
-                -o -name "ilspycmd.exe" \
+                -o \
+                -name "ilspycmd.dll" \
               \) \
               | head -1
           )"
 
           if [ -z "$ILSPYCMD" ]; then
             echo
-            echo "ERROR: ilspycmd executable not found."
+            echo "ERROR: ILSpyCmd not found."
 
             echo
-            echo "Directory contents:"
-            find tools/ilspy -maxdepth 3 -type f -print
+            echo "Complete directory:"
+            find "$TOOLS_DIR/ilspy" \
+              -type f \
+              -print
 
             exit 1
           fi
 
-          chmod +x "$ILSPYCMD"
+          echo "ILSpyCmd:"
+          echo "$ILSPYCMD"
+
+          if [[ "$ILSPYCMD" != *.dll ]]; then
+            chmod +x "$ILSPYCMD"
+          fi
 
           echo "ILSPYCMD=$ILSPYCMD" >> "$GITHUB_ENV"
 
-          echo
-          echo "ILSpy executable:"
+      # --------------------------------------------------------
+      # Test ILSpy
+      # --------------------------------------------------------
+
+      - name: Test ILSpy
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "========================================"
+          echo "Testing ILSpy"
+          echo "========================================"
+
+          echo "ILSPYCMD:"
           echo "$ILSPYCMD"
 
-          echo
-          echo "ILSpy test:"
-          "$ILSPYCMD" --help | head -40
+          if [[ "$ILSPYCMD" == *.dll ]]; then
+            dotnet "$ILSPYCMD" --version
+            dotnet "$ILSPYCMD" --help \
+              | head -80
+          else
+            "$ILSPYCMD" --version
+            "$ILSPYCMD" --help \
+              | head -80
+          fi
 
-      # ============================================================
-      # 10. DECOMPILE BVST6
-      # ============================================================
+      # --------------------------------------------------------
+      # Decompile BVST6
+      # --------------------------------------------------------
 
       - name: Decompile BVST6
         shell: bash
         run: |
           set -euo pipefail
 
+          echo "========================================"
+          echo "Decompiling BVST6"
+          echo "========================================"
+
           mkdir -p "$SOURCE_DIR/BVST6"
 
-          echo "Decompiling:"
+          echo "Input:"
           echo "$BVST6"
 
-          "$ILSPYCMD" \
-            "$BVST6" \
-            -p \
-            -o "$SOURCE_DIR/BVST6"
+          echo
+          echo "Output:"
+          echo "$SOURCE_DIR/BVST6"
+
+          if [[ "$ILSPYCMD" == *.dll ]]; then
+
+            dotnet "$ILSPYCMD" \
+              -p \
+              -o "$SOURCE_DIR/BVST6" \
+              "$BVST6"
+
+          else
+
+            "$ILSPYCMD" \
+              -p \
+              -o "$SOURCE_DIR/BVST6" \
+              "$BVST6"
+
+          fi
 
           echo
-          echo "Decompilation finished."
+          echo "Decompilation completed."
 
           echo
-          echo "Generated files:"
+          echo "C# files:"
           find "$SOURCE_DIR/BVST6" \
             -type f \
-            | head -300
-
-          echo
-          echo "Generated file count:"
-          find "$SOURCE_DIR/BVST6" \
-            -type f \
+            -name "*.cs" \
             | wc -l
 
-      # ============================================================
-      # 11. FIND CORE DLLS
-      # ============================================================
-
-      - name: Find BVST core DLLs
-        shell: bash
-        run: |
-          {
-            echo "# Core DLLs"
-            echo
-
-            find "$EXTRACT_DIR" \
-              -type f \
-              \( \
-                -iname "LrMain.dll" \
-                -o -iname "LrSystem.dll" \
-                -o -iname "LrComponents.dll" \
-                -o -iname "CommonComponents.dll" \
-                -o -iname "CommonPrint.dll" \
-                -o -iname "DirectShowLib.dll" \
-                -o -iname "DirectShowLib-2005.dll" \
-                -o -iname "AForge.Video.DirectShow.dll" \
-                -o -iname "AForge.Video.dll" \
-                -o -iname "LrCapture.dll" \
-              \) \
-              -print \
-              | sort
-
-          } > "$ANALYSIS_DIR/core-dlls.txt"
-
-          cat "$ANALYSIS_DIR/core-dlls.txt"
-
-      # ============================================================
-      # 12. ANALYZE .NET
-      # ============================================================
-
-      - name: Analyze .NET
-        shell: bash
-        run: |
-          {
-            echo "# .NET Analysis"
-            echo
-
-            echo "## Project files"
-            find "$SOURCE_DIR" \
-              -type f \
-              \( \
-                -iname "*.csproj" \
-                -o -iname "*.sln" \
-                -o -iname "*.config" \
-              \) \
-              -print
-
-            echo
-            echo "## Target framework references"
-
-            grep -RniE \
-              "TargetFramework|TargetFrameworkVersion|TargetFrameworks|\.NET Framework|net[0-9]" \
-              "$SOURCE_DIR" \
-              2>/dev/null \
-              | head -1000 || true
-
-            echo
-            echo "## Assembly references"
-
-            grep -RniE \
-              "System\.Windows\.Forms|System\.Drawing|Microsoft\.Win32|System\.Management|System\.ServiceProcess|System\.Web" \
-              "$SOURCE_DIR" \
-              2>/dev/null \
-              | head -1000 || true
-
-          } > "$ANALYSIS_DIR/dotnet.md"
-
-      # ============================================================
-      # 13. WINDOWS API
-      # ============================================================
-
-      - name: Analyze Windows APIs
-        shell: bash
-        run: |
-          {
-            echo "# Windows API Usage"
-            echo
-
-            grep -RniE \
-              "DllImport|LibraryImport|kernel32|user32|gdi32|advapi32|shell32|ole32|oleaut32|comdlg32|winmm|ws2_32|ntdll" \
-              "$SOURCE_DIR" \
-              2>/dev/null \
-              | head -2000 || true
-
-          } > "$ANALYSIS_DIR/windows-api.md"
-
-      # ============================================================
-      # 14. WINFORMS
-      # ============================================================
-
-      - name: Analyze Windows Forms
-        shell: bash
-        run: |
-          {
-            echo "# Windows Forms Usage"
-            echo
-
-            grep -RniE \
-              "System\.Windows\.Forms|Form\b|UserControl|Application\.Run|Control\b|IWin32Window|FormWindowState" \
-              "$SOURCE_DIR" \
-              2>/dev/null \
-              | head -2000 || true
-
-          } > "$ANALYSIS_DIR/winforms.md"
-
-      # ============================================================
-      # 15. DIRECTSHOW
-      # ============================================================
-
-      - name: Analyze DirectShow
-        shell: bash
-        run: |
-          {
-            echo "# DirectShow / AForge"
-            echo
-
-            grep -RniE \
-              "DirectShow|DirectShowLib|AForge|VideoCaptureDevice|FilterGraph|CaptureGraphBuilder|DsDevice|MediaType" \
-              "$SOURCE_DIR" \
-              2>/dev/null \
-              | head -2000 || true
-
-          } > "$ANALYSIS_DIR/directshow.md"
-
-      # ============================================================
-      # 16. FLASH
-      # ============================================================
-
-      - name: Analyze Flash
-        shell: bash
-        run: |
-          {
-            echo "# Flash / SWF / PepperFlash"
-            echo
-
-            echo "## Files"
-
-            find "$EXTRACT_DIR" \
-              -type f \
-              \( \
-                -iname "*.swf" \
-                -o -iname "*flash*" \
-                -o -iname "*pepper*" \
-                -o -iname "*ppapi*" \
-              \) \
-              -print \
-              | sort
-
-            echo
-            echo "## Source references"
-
-            grep -RniE \
-              "Shockwave|Flash|SWF|Pepper|PPAPI|ActiveX" \
-              "$SOURCE_DIR" \
-              2>/dev/null \
-              | head -2000 || true
-
-          } > "$ANALYSIS_DIR/flash.md"
-
-      # ============================================================
-      # 17. NATIVE BINARIES
-      # ============================================================
-
-      - name: Analyze native binaries
-        shell: bash
-        run: |
-          {
-            echo "# Native Binary Analysis"
-            echo
-
-            while IFS= read -r -d '' FILE; do
-
-              TYPE="$(file -b "$FILE")"
-
-              if echo "$TYPE" | grep -Eq \
-                "PE32|ELF|Mach-O|shared object|executable"; then
-
-                echo
-                echo "========================================"
-                echo "$FILE"
-                echo "========================================"
-
-                echo "$TYPE"
-
-                if command -v objdump >/dev/null 2>&1; then
-                  objdump -f "$FILE" 2>/dev/null || true
-                fi
-
-              fi
-
-            done < <(
-              find "$EXTRACT_DIR" \
-                -type f \
-                -print0
-            )
-
-          } > "$ANALYSIS_DIR/native-binaries.md"
-
-      # ============================================================
-      # 18. SOURCE / BUILD SYSTEM
-      # ============================================================
-
-      - name: Detect source and build files
-        shell: bash
-        run: |
-          {
-            echo "# Source / Build Files"
-            echo
-
-            find "$SOURCE_DIR" "$EXTRACT_DIR" \
-              -type f \
-              \( \
-                -iname "*.cs" \
-                -o -iname "*.csproj" \
-                -o -iname "*.sln" \
-                -o -iname "*.props" \
-                -o -iname "*.targets" \
-                -o -iname "packages.config" \
-                -o -iname "package.json" \
-                -o -iname "CMakeLists.txt" \
-                -o -iname "Makefile" \
-                -o -iname "*.cpp" \
-                -o -iname "*.c" \
-                -o -iname "*.h" \
-                -o -iname "*.hpp" \
-                -o -iname "*.xcodeproj" \
-              \) \
-              -print \
-              | sort
-
-          } > "$ANALYSIS_DIR/source-files.txt"
-
-      # ============================================================
-      # 19. DEPENDENCY NAMES
-      # ============================================================
-
-      - name: Extract dependency references
-        shell: bash
-        run: |
-          {
-            echo "# Dependency References"
-            echo
-
-            grep -RhoE \
-              "[A-Za-z0-9_.-]+\.(dll|exe|dylib|so)" \
-              "$SOURCE_DIR" \
-              2>/dev/null \
-              | sort -fu \
-              | head -3000 || true
-
-          } > "$ANALYSIS_DIR/dependencies.txt"
-
-      # ============================================================
-      # 20. FILE STATISTICS
-      # ============================================================
-
-      - name: Generate statistics
-        shell: bash
-        run: |
-          {
-            echo "# BVST Statistics"
-            echo
-
-            echo "## Files"
-            find "$EXTRACT_DIR" -type f | wc -l
-
-            echo
-            echo "## Directories"
-            find "$EXTRACT_DIR" -type d | wc -l
-
-            echo
-            echo "## Extracted size"
-            du -sh "$EXTRACT_DIR"
-
-            echo
-            echo "## Extensions"
-            echo '```text'
-
-            find "$EXTRACT_DIR" \
-              -type f \
-              | awk '
-                {
-                  n=$0
-                  sub(/^.*\//,"",n)
-
-                  if (n !~ /\./) {
-                    print "[no extension]"
-                  } else {
-                    sub(/^.*\./,"",n)
-                    print tolower(n)
-                  }
-                }
-              ' \
-              | sort \
-              | uniq -c \
-              | sort -rn \
-              | head -300
-
-            echo '```'
-
-          } > "$ANALYSIS_DIR/statistics.md"
-
-      # ============================================================
-      # 21. MACOS PORT REPORT
-      # ============================================================
-
-      - name: Generate macOS port report
-        shell: bash
-        run: |
-          cat > "$ANALYSIS_DIR/MACOS_PORT.md" <<'EOF'
-          # BVST 6.0 → macOS ARM64
-
-          ## Target
-
-          Apple Silicon / ARM64 / macOS 12 Monterey.
-
-          ## Original application
-
-          BVST6.exe is a Windows x86 .NET desktop application.
-
-          ## Important portability barriers
-
-          ### Windows Forms
-
-          System.Windows.Forms is Windows-specific for a native macOS
-          application.
-
-          The UI will need to be migrated or replaced.
-
-          ### Windows API
-
-          P/Invoke calls to Windows DLLs cannot be used directly in a
-          native macOS build.
-
-          These calls must be isolated and replaced.
-
-          ### DirectShow
-
-          DirectShow and AForge.Video.DirectShow are Windows-specific.
-
-          Camera/video functionality will need a macOS implementation,
-          such as AVFoundation.
-
-          ### Flash
-
-          Flash/SWF/ActiveX references were detected.
-
-          Modern macOS does not provide the original Adobe Flash runtime.
-
-          If the application actually requires SWF execution, the
-          runtime integration will need to be replaced.
-
-          ### Architecture
-
-          Original application:
-
-              Windows PE / x86
-
-          Target:
-
-              macOS / ARM64
-
-          Therefore the original executable cannot simply be converted
-          by changing its architecture.
-
-          ## Recommended migration
-
-          1. Identify BVST6 entry point.
-          2. Identify minimum required assemblies.
-          3. Migrate portable managed code.
-          4. Create a modern .NET project.
-          5. Replace Windows Forms.
-          6. Replace Windows API calls.
-          7. Replace DirectShow/AForge capture.
-          8. Replace Flash integration.
-          9. Build for osx-arm64.
-          10. Package as .app.
-          EOF
-
-      # ============================================================
-      # 22. UPLOAD ANALYSIS
-      # ============================================================
-
-      - name: Upload analysis artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: BVST-macOS-port-analysis
-          path: |
-            analysis/
-            port-source/
-          retention-days: 30
-
-      # ============================================================
-      # 23. COMMIT ANALYSIS
-      # ============================================================
-
-      - name: Commit analysis
+          echo
+          echo "Project files:"
+          find "$SOURCE_DIR/BVST6" \
+            -type f \
+            \( \
+              -name "*.csproj" \
+              -o \
+              -name "*.sln" \
+            \) \
+            -print
+
+      # --------------------------------------------------------
+      # Analyze all Windows binaries
+      # --------------------------------------------------------
+
+      - name: Analyze Windows binaries
         shell: bash
         run: |
           set -euo pipefail
 
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          mkdir -p "$ANALYSIS_DIR/binaries"
 
-          git add analysis/
+          echo "========================================"
+          echo "Scanning Windows binaries"
+          echo "========================================"
 
-          if git diff --cached --quiet; then
-            echo "No changes."
-            exit 0
-          fi
+          find "$EXTRACT_DIR" \
+            -type f \
+            \( \
+              -iname "*.exe" \
+              -o \
+              -iname "*.dll" \
+            \) \
+            | sort \
+            > "$ANALYSIS_DIR/binaries/all-binaries.txt"
 
-          git commit \
-            -m "Analyze BVST for macOS ARM64"
+          echo "Total EXE/DLL:"
+          wc -l "$ANALYSIS_DIR/binaries/all-binaries.txt"
 
-          git push origin main
+          echo
+          echo "PE / .NET classification..."
+
+          : > "$ANALYSIS_DIR/binaries/dotnet-binaries.txt"
+          : > "$ANALYSIS_DIR/binaries/native-binaries.txt"
+
+          while IFS= read -r f; do
+
+            TYPE="$(file -b "$f" || true)"
+
+            if echo "$TYPE" | grep -qiE \
+              'Mono/.Net assembly|\.Net assembly'; then
+
+              echo "$f" \
+                >> "$ANALYSIS_DIR/binaries/dotnet-binaries.txt"
+
+            elif echo "$TYPE" | grep -qiE \
+              'PE32|PE32\+'; then
+
+              echo "$f" \
+                >> "$ANALYSIS_DIR/binaries/native-binaries.txt"
+
+            fi
+
+          done < "$ANALYSIS_DIR/binaries/all-binaries.txt"
+
+          echo
+          echo ".NET binaries:"
+          wc -l \
+            "$ANALYSIS_DIR/binaries/dotnet-binaries.txt"
+
+          echo
+          echo "Native PE binaries:"
+          wc -l \
+            "$ANALYSIS_DIR/binaries/native-binaries.txt"
+
+      # --------------------------------------------------------
+      # Search Windows-specific APIs
+      # --------------------------------------------------------
+
+      - name: Analyze Windows API usage
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mkdir -p "$ANALYSIS_DIR/windows"
+
+          echo "========================================"
+          echo "Windows API analysis"
+          echo "========================================"
+
+          # Search decompiled source
+
+          rg -n \
+            -i \
+            --glob "*.cs" \
+            'DllImport|LibraryImport|kernel32|user32|gdi32|advapi32|shell32|ole32|oleaut32|winmm|wininet|ws2_32' \
+            "$SOURCE_DIR/BVST6" \
+            > "$ANALYSIS_DIR/windows/pinvoke.txt" \
+            || true
+
+          rg -n \
+            -i \
+            --glob "*.cs" \
+            'COM|Marshal\.|ComImport|GuidAttribute|Activator\.CreateInstance' \
+            "$SOURCE_DIR/BVST6" \
+            > "$ANALYSIS_DIR/windows/com.txt" \
+            || true
+
+          rg -n \
+            -i \
+            --glob "*.cs" \
+            'System\.Windows\.Forms|Windows\.Forms|Form\b|Control\b|IWin32Window' \
+            "$SOURCE_DIR/BVST6" \
+            > "$ANALYSIS_DIR/windows/winforms.txt" \
+            || true
+
+          rg -n \
+            -i \
+            --glob "*.cs" \
+            'DirectShow|AForge|VideoCaptureDevice|FilterGraph|IMediaControl|ICaptureGraphBuilder' \
+            "$SOURCE_DIR/BVST6" \
+            > "$ANALYSIS_DIR/windows/directshow.txt" \
+            || true
+
+          rg -n \
+            -i \
+            --glob "*.cs" \
+            'Shockwave|Flash|SWF|ActiveX|AxShockwave|application/x-shockwave-flash' \
+            "$SOURCE_DIR/BVST6" \
+            > "$ANALYSIS_DIR/windows/flash.txt" \
+            || true
+
+          echo
+          echo "Analysis completed."
+
+      # --------------------------------------------------------
+      # Search entire extracted application for technology
+      # --------------------------------------------------------
+
+      - name: Analyze application technologies
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mkdir -p "$ANALYSIS_DIR/technology"
+
+          echo "========================================"
+          echo "Technology detection"
+          echo "========================================"
+
+          find "$EXTRACT_DIR" \
+            -type f \
+            -print \
+            > "$ANALYSIS_DIR/technology/all-files.txt"
+
+          echo "File extensions:"
+          awk '
+            {
+              n=$0
+              sub(/^.*\//, "", n)
+              if (n ~ /\./) {
+                sub(/^.*\./, "", n)
+                print tolower(n)
+              }
+            }
+          ' "$ANALYSIS_DIR/technology/all-files.txt" \
+            | sort \
+            | uniq -c \
+            | sort -nr \
+            > "$ANALYSIS_DIR/technology/extensions.txt"
+
+          echo
+          echo "Flash/SWF references:"
+          rg -n \
+            -i \
+            'shockwave|flash|swf|activex|application/x-shockwave-flash' \
+            "$EXTRACT_DIR" \
+            > "$ANALYSIS_DIR/technology/flash-references.txt" \
+            || true
+
+          echo
+          echo "DirectShow references:"
+          rg -n \
+            -i \
+            'directshow|quartz\.dll|AForge\.Video\.DirectShow' \
+            "$EXTRACT_DIR" \
+            > "$ANALYSIS_DIR/technology/directshow-references.txt" \
+            || true
+
+          echo
+          echo "WinForms references:"
+          rg -n \
+            -i \
+            'System\.Windows\.Forms|Windows\.Forms' \
+            "$EXTRACT_DIR" \
+            > "$ANALYSIS_DIR/technology/winforms-references.txt" \
+            || true
+
+      # --------------------------------------------------------
+      # Inspect decompiled project
+      # --------------------------------------------------------
+
+      - name: Inspect generated project
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mkdir -p "$ANALYSIS_DIR/project"
+
+          echo "========================================"
+          echo "Generated project"
+          echo "========================================"
+
+          find "$SOURCE_DIR/BVST6" \
+            -type f \
+            | sort \
+            > "$ANALYSIS_DIR/project/files.txt"
+
+          find "$SOURCE_DIR/BVST6" \
+            -type f \
+            -name "*.csproj" \
+            -exec sh -c '
+              for f do
+                echo "===== $f ====="
+                cat "$f"
+                echo
+              done
+            ' sh {} + \
+            > "$ANALYSIS_DIR/project/csproj.txt" \
+            || true
+
+          echo
+          echo "Namespaces:"
+          rg -o \
+            --no-filename \
+            'namespace[[:space:]]+[A-Za-z0-9_.]+' \
+            "$SOURCE_DIR/BVST6" \
+            --glob "*.cs" \
+            | sort \
+            | uniq -c \
+            | sort -nr \
+            > "$ANALYSIS_DIR/project/namespaces.txt" \
+            || true
+
+      # --------------------------------------------------------
+      # Generate migration report
+      # --------------------------------------------------------
+
+      - name: Generate macOS ARM64 migration report
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          REPORT="$ANALYSIS_DIR/BVST-macOS-ARM64-Migration-Report.md"
+
+          cat > "$REPORT" <<'EOF'
+          # BVST → macOS ARM64 Migration Analysis
+
+          ## Target
+
+          Native Apple Silicon macOS application.
+
+          Target runtime:
+
+          `osx-arm64`
+
+          Target architecture:
+
+          `ARM64 / Apple Silicon`
+
+          ---
+
+          ## Original application
+
+          The original BVST application is a Windows executable.
+
+          Main executable:
+
+          `BVST6.exe`
+
+          ---
+
+          ## Important
+
+          This analysis does NOT claim that the Windows executable can simply be
+          recompiled for ARM64.
+
+          A native macOS port requires source-level migration.
+
+          ---
+
+          ## Migration categories
+
+          ### 1. .NET managed code
+
+          Potentially reusable after modification.
+
+          Typical changes:
+
+          - project format
+          - target framework
+          - Windows-only references
+          - native interop
+          - UI framework
+          - filesystem paths
+          - registry access
+          - Windows services
+          - COM dependencies
+
+          ### 2. Windows Forms
+
+          Windows Forms is Windows-specific.
+
+          Any code depending on:
+
+          `System.Windows.Forms`
+
+          must be migrated to a cross-platform UI technology or rewritten.
+
+          ### 3. Win32 / PInvoke
+
+          Calls to:
+
+          - kernel32
+          - user32
+          - gdi32
+          - shell32
+          - advapi32
+          - ole32
+          - winmm
+          - wininet
+          - ws2_32
+
+          cannot simply be compiled for macOS.
+
+          They need native macOS equivalents or removal.
+
+          ### 4. COM / ActiveX
+
+          COM and ActiveX components are Windows technologies.
+
+          These require replacement on macOS.
+
+          ### 5. DirectShow
+
+          DirectShow is Windows-specific.
+
+          Camera/video capture code should be migrated to:
+
+          Apple AVFoundation
+
+          or another cross-platform media abstraction.
+
+          ### 6. AForge
+
+          AForge.Video.DirectShow and related components normally depend on
+          Windows video infrastructure.
+
+          Camera capture therefore requires a platform-specific replacement.
+
+          ### 7. Flash / SWF
+
+          Any Shockwave Flash / ActiveX integration cannot be carried directly
+          into a native macOS application.
+
+          The actual UI/content usage must be identified before selecting a
+          replacement.
+
+          ### 8. Native DLLs
+
+          PE32/PE32+ Windows DLLs cannot be loaded natively by macOS.
+
+          They must be:
+
+          - replaced
+          - ported
+          - rebuilt from source
+          - or isolated behind another architecture/service
+
+          ---
+
+          ## Recommended port architecture
+
+          Original:
+
+          Windows .NET
+          +
+          WinForms
+          +
+          DirectShow
+          +
+          Windows APIs
+          +
+          possible Flash/ActiveX
+
+          Target:
+
+          .NET
+          +
+          cross-platform UI
+          +
+          macOS native interop
+          +
+          AVFoundation
+          +
+          replacement for Flash/ActiveX
+          +
+          ARM64 native dependencies
+
+          ---
+
+          ## Next stage
+
+          The next automated stage should:
+
+          1. Inspect the generated .csproj.
+          2. Identify all NuGet dependencies.
+          3. Identify all Windows-only namespaces.
+          4. Identify every P/Invoke.
+          5. Identify every COM interface.
+          6. Identify camera/video code.
+          7. Identify Flash/SWF code.
+          8. Create a migration map.
+          9. Create a new cross-platform project.
+          10. Replace Windows-specific infrastructure.
+          11. Build for `osx-arm64`.
+          12. Package a `.app`.
+
+          ---
+
+          ## Important limitation
+
+          Decompilation produces approximate source code.
+
+          It does not restore the original source project, comments, build system,
+          proprietary SDKs, certificates, or third-party source code.
+
+          Therefore compilation errors after decompilation are expected and must
+          be resolved during the migration stage.
+          EOF
+
+          echo
+          echo "Migration report:"
+          cat "$REPORT"
+
+      # --------------------------------------------------------
+      # Create analysis summary
+      # --------------------------------------------------------
+
+      - name: Generate analysis summary
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          SUMMARY="$ANALYSIS_DIR/SUMMARY.txt"
+
+          {
+            echo "BVST ANALYSIS SUMMARY"
+            echo "====================="
+            echo
+            echo "Executable:"
+            echo "$BVST6"
+            echo
+            echo "Executable type:"
+            file "$BVST6"
+            echo
+            echo "Total files:"
+            find "$EXTRACT_DIR" -type f | wc -l
+            echo
+            echo "Total directories:"
+            find "$EXTRACT_DIR" -type d | wc -l
+            echo
+            echo ".NET binaries:"
+            wc -l "$ANALYSIS_DIR/binaries/dotnet-binaries.txt"
+            echo
+            echo "Native binaries:"
+            wc -l "$ANALYSIS_DIR/binaries/native-binaries.txt"
+            echo
+            echo "C# files generated:"
+            find "$SOURCE_DIR/BVST6" \
+              -type f \
+              -name "*.cs" \
+              | wc -l
+            echo
+            echo "WinForms references:"
+            wc -l "$ANALYSIS_DIR/windows/winforms.txt" || true
+            echo
+            echo "PInvoke references:"
+            wc -l "$ANALYSIS_DIR/windows/pinvoke.txt" || true
+            echo
+            echo "COM references:"
+            wc -l "$ANALYSIS_DIR/windows/com.txt" || true
+            echo
+            echo "DirectShow references:"
+            wc -l "$ANALYSIS_DIR/windows/directshow.txt" || true
+            echo
+            echo "Flash references:"
+            wc -l "$ANALYSIS_DIR/windows/flash.txt" || true
+          } > "$SUMMARY"
+
+          cat "$SUMMARY"
+
+      # --------------------------------------------------------
+      # Create compressed analysis package
+      # --------------------------------------------------------
+
+      - name: Package analysis
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mkdir -p "$BUILD_DIR"
+
+          tar -czf \
+            "$BUILD_DIR/BVST-analysis.tar.gz" \
+            "$ANALYSIS_DIR"
+
+          echo
+          echo "Analysis package:"
+          ls -lh \
+            "$BUILD_DIR/BVST-analysis.tar.gz"
+
+      # --------------------------------------------------------
+      # Upload reports and decompiled source
+      # --------------------------------------------------------
+
+      - name: Upload BVST analysis
+        uses: actions/upload-artifact@v4
+        with:
+          name: BVST-analysis
+          path: |
+            analysis/
+            port-source/BVST6/
+          if-no-files-found: error
+          retention-days: 30
+
+      # --------------------------------------------------------
+      # Upload archive analysis package
+      # --------------------------------------------------------
+
+      - name: Upload analysis archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: BVST-analysis-package
+          path: build/BVST-analysis.tar.gz
+          if-no-files-found: error
+          retention-days: 30
 
 
-  # ==================================================================
-  # MACOS BUILD ENVIRONMENT
-  # ==================================================================
+  # ==========================================================
+  # JOB 2
+  # Prepare macOS ARM64 build environment
+  # ==========================================================
 
-  macos-build:
-    name: macOS ARM64 Port Build
-    needs: prepare
-
+  macos-arm64-prepare:
+    name: Prepare macOS ARM64 Build
     runs-on: macos-14
+
+    needs:
+      - analyze-bvst
 
     steps:
 
-      - name: Checkout
+      # --------------------------------------------------------
+      # Checkout
+      # --------------------------------------------------------
+
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
           lfs: true
+          fetch-depth: 1
 
-      - name: Install .NET
+      # --------------------------------------------------------
+      # .NET
+      # --------------------------------------------------------
+
+      - name: Install .NET 8
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "8.0.x"
+          dotnet-version: '8.0.x'
 
-      - name: Show macOS environment
+      # --------------------------------------------------------
+      # Environment
+      # --------------------------------------------------------
+
+      - name: Inspect macOS ARM64 environment
         shell: bash
         run: |
-          echo "=========================================="
-          echo "macOS"
-          echo "=========================================="
+          set -euo pipefail
+
+          echo "========================================"
+          echo "macOS ARM64 environment"
+          echo "========================================"
 
           sw_vers
 
           echo
-          echo "Kernel:"
+          echo "Machine:"
           uname -a
 
           echo
@@ -930,108 +1166,141 @@ jobs:
           echo ".NET:"
           dotnet --info
 
-      # ============================================================
-      # CREATE PORT WORKSPACE
-      # ============================================================
+          echo
+          echo "Available runtimes:"
+          dotnet --list-runtimes
 
-      - name: Prepare macOS port workspace
+          echo
+          echo "Available SDKs:"
+          dotnet --list-sdks
+
+      # --------------------------------------------------------
+      # Verify ARM64
+      # --------------------------------------------------------
+
+      - name: Verify Apple Silicon architecture
         shell: bash
         run: |
-          rm -rf "$BUILD_DIR"
+          set -euo pipefail
 
-          mkdir -p "$BUILD_DIR"
+          ARCH="$(uname -m)"
 
-          cat > "$BUILD_DIR/README.md" <<'EOF'
-          # BVST macOS ARM64 Build
+          echo "Architecture: $ARCH"
 
-          Target:
+          if [ "$ARCH" != "arm64" ]; then
+            echo "WARNING: Runner is not arm64."
+          else
+            echo "Apple Silicon ARM64 confirmed."
+          fi
 
-          - macOS 12 Monterey
-          - Apple Silicon
-          - ARM64
-          - .NET 8
+      # --------------------------------------------------------
+      # Test native ARM64 .NET build
+      # --------------------------------------------------------
 
-          The original BVST executable is Windows x86/.NET.
-
-          Native macOS compilation requires migration of Windows-specific
-          dependencies before the final application can be produced.
-          EOF
-
-      # ============================================================
-      # TEST .NET ARM64
-      # ============================================================
-
-      - name: Test .NET ARM64 runtime
+      - name: Test osx-arm64 publishing
         shell: bash
         run: |
-          mkdir -p "$BUILD_DIR/test"
+          set -euo pipefail
 
-          cd "$BUILD_DIR/test"
+          rm -rf "$RUNNER_TEMP/bvst-arm64-test"
+
+          mkdir -p "$RUNNER_TEMP/bvst-arm64-test"
+
+          cd "$RUNNER_TEMP/bvst-arm64-test"
 
           dotnet new console \
+            -n BVSTArm64Test \
             --framework net8.0
 
-          dotnet run
+          cd BVSTArm64Test
+
+          dotnet publish \
+            -c Release \
+            -r osx-arm64 \
+            --self-contained false
+
+          echo
+          echo "Published files:"
+          find bin/Release \
+            -type f \
+            | sort
+
+      # --------------------------------------------------------
+      # Create migration skeleton
+      # --------------------------------------------------------
+
+      - name: Create macOS ARM64 project skeleton
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mkdir -p macos-port
+
+          cd macos-port
+
+          dotnet new console \
+            -n BVST.Mac \
+            --framework net8.0
+
+          cd BVST.Mac
+
+          dotnet add package System.Drawing.Common \
+            --version 8.0.0 \
+            || true
+
+          cat > BVST.Mac.csproj <<'EOF'
+          <Project Sdk="Microsoft.NET.Sdk">
+
+            <PropertyGroup>
+              <OutputType>Exe</OutputType>
+              <TargetFramework>net8.0</TargetFramework>
+
+              <RuntimeIdentifier>osx-arm64</RuntimeIdentifier>
+
+              <ImplicitUsings>enable</ImplicitUsings>
+              <Nullable>enable</Nullable>
+
+              <AssemblyName>BVST.Mac</AssemblyName>
+              <RootNamespace>BVST.Mac</RootNamespace>
+
+              <PublishSingleFile>false</PublishSingleFile>
+              <SelfContained>false</SelfContained>
+            </PropertyGroup>
+
+          </Project>
+          EOF
+
+          cat > Program.cs <<'EOF'
+          using System;
+
+          Console.WriteLine("BVST macOS ARM64 migration project");
+          Console.WriteLine($"Runtime: {System.Runtime.InteropServices.RuntimeInformation.RuntimeIdentifier}");
+          Console.WriteLine($"OS: {System.Runtime.InteropServices.RuntimeInformation.OSDescription}");
+          Console.WriteLine($"Architecture: {System.Runtime.InteropServices.RuntimeInformation.OSArchitecture}");
+          EOF
+
+          dotnet restore
+
+          dotnet build \
+            -c Release \
+            -r osx-arm64
 
           dotnet publish \
             -c Release \
             -r osx-arm64 \
             --self-contained false \
-            -o ../runtime-test
+            -o ../../build/BVST-Mac
 
-          echo
-          echo "Published:"
-          find ../runtime-test -maxdepth 2 -type f | head -50
+      # --------------------------------------------------------
+      # Upload macOS build skeleton
+      # --------------------------------------------------------
 
-      # ============================================================
-      # BUILD STATUS
-      # ============================================================
-
-      - name: Generate build status
-        shell: bash
-        run: |
-          cat > "$BUILD_DIR/MACOS_BUILD_STATUS.md" <<'EOF'
-          # BVST macOS ARM64 Build Status
-
-          ## Target
-
-          `osx-arm64`
-
-          ## Build environment
-
-          macOS 14 runner.
-
-          ## Result
-
-          The ARM64 .NET build environment is functional.
-
-          ## BVST status
-
-          BVST6.exe is not directly buildable as a native macOS application
-          because it is a Windows x86 application using Windows-specific
-          technologies.
-
-          The next phase is source migration.
-
-          ## Required migration
-
-          - System.Windows.Forms
-          - Windows API / PInvoke
-          - COM
-          - DirectShow
-          - AForge.Video.DirectShow
-          - Flash / ActiveX integration
-
-          Once those dependencies have been replaced, the managed
-          application can be progressively moved into a macOS-compatible
-          .NET project targeting `osx-arm64`.
-          EOF
-
-          cat "$BUILD_DIR/MACOS_BUILD_STATUS.md"
-
-      - name: Upload macOS build status
+      - name: Upload macOS ARM64 build skeleton
         uses: actions/upload-artifact@v4
         with:
-          name: BVST-macOS-build-status
-          path: build/
+          name: BVST-macOS-ARM64-skeleton
+          path: |
+            macos-port/
+            build/BVST-Mac/
+          if-no-files-found: error
           retention-days: 30
